@@ -23,7 +23,7 @@ Or install it yourself as:
 
 ## Usage
 
-Require this plugin just after Minitest:
+Require this plugin right after Minitest:
 
 ```ruby
 require 'minitest/autorun'
@@ -34,7 +34,7 @@ That's it! The next time you run your tests, a new report format will be used in
 
 ## Features
 
-Based on [minitest-colorin](https://github.com/gabynaiman/minitest-colorin/), the minitest-bender reporter gives you colored output including:
+Based on [minitest-colorin](https://github.com/gabynaiman/minitest-colorin/), the minitest-bender reporter offers you colored output including:
 
 * Status, running time, name and message for each test/expectation, grouped by class/context
 * Details of skips, failures and errors in three different sections, with diffs, backtraces and commands to rerun each single test
