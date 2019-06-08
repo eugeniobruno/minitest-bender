@@ -2,7 +2,6 @@
 
 [![Gem Version](https://badge.fury.io/rb/minitest-bender.svg)](https://badge.fury.io/rb/minitest-bender)
 [![Code Climate](https://codeclimate.com/github/eugeniobruno/minitest-bender.svg)](https://codeclimate.com/github/eugeniobruno/minitest-bender)
-[![Dependency Status](https://gemnasium.com/eugeniobruno/minitest-bender.svg)](https://gemnasium.com/eugeniobruno/minitest-bender)
 
 My own Minitest reporter, without blackjack but with a hook.
 
