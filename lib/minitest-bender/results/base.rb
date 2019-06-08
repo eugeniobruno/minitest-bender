@@ -10,7 +10,12 @@ module MinitestBender
       end
 
       def context
-        @context ||= minitest_result.class.name.gsub('::', ' > ')
+        @context ||=
+          if minitest_result.respond_to?(:klass) # minitest >= 5.11
+            minitest_result.klass
+          else
+            minitest_result.class.name
+          end.gsub('::', ' > ')
       end
 
       def header
