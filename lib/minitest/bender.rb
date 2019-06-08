@@ -1,5 +1,4 @@
 require 'minitest'
-require 'colorin'
 require 'minitest_bender'
 
 module Minitest

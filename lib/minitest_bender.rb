@@ -1,3 +1,5 @@
+require 'colorin'
+
 require 'minitest-bender/version'
 
 require 'minitest-bender/states/base'
