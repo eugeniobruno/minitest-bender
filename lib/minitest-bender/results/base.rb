@@ -52,7 +52,21 @@ module MinitestBender
       end
 
       def formatted_time
-        Colorin.grey_700("#{(time * 1000).round}ms ".rjust(6))
+        time_in_s = time
+        time_with_unit =
+          case time_in_s
+          when 0...1
+            sprintf('%.0fms ', time_in_s * 1000)
+          when 1...10
+            sprintf('%.2fs ', time_in_s)
+          when 10...100
+            sprintf('%.1fs ', time_in_s)
+          when 100...10000
+            sprintf('%.0fs ', time_in_s)
+          else
+            sprintf('%.0fs', time_in_s)
+          end
+        Colorin.grey_700(time_with_unit.rjust(6))
       end
 
       def rerun_command
