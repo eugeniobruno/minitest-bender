@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'forwardable'
 
 module MinitestBender
@@ -17,7 +18,7 @@ module MinitestBender
             minitest_result.klass
           else
             minitest_result.class.name
-          end.gsub('::', ' > ')
+          end.gsub('::', ' ▸ ')
       end
 
       def header
