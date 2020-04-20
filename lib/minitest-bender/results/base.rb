@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module MinitestBender
   module Results
     class Base
