@@ -23,6 +23,11 @@ module Minitest
     end
 
     def record(minitest_result)
+      # as we might already have some output from the test itself,
+      # make sure we see *all* of it before we report anything
+      STDOUT.flush
+      STDERR.flush
+
       result = MinitestBender.result_factory.create(minitest_result)
       results << result
 
