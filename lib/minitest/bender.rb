@@ -3,7 +3,11 @@ require 'minitest_bender'
 
 module Minitest
   class Bender < AbstractReporter
-    attr_reader :io, :options, :previous_context, :results, :started_at
+    def self.enable!; @@is_enabled = true; end
+    def self.enabled?; @@is_enabled ||= false; end
+
+    attr_accessor :io, :options
+    attr_reader :previous_context, :results, :started_at
 
     def initialize(io, options = {})
       @io = io
@@ -153,6 +157,36 @@ module Minitest
 
     def formatted_slowness_podium_label
       "  #{Colorin.grey_700('SLOWNESS PODIUM').bold.underline}"
+    end
+  end
+
+  ##
+  # Compatibility with
+  # [minitest-reporters](https://github.com/kern/minitest-reporters)
+  #
+  # Given:
+  #
+  # ```
+  # require 'minitest/reporters'
+  # Minitest::Reporters.use!
+  # ```
+  #
+  # Bender can be selected with:
+  #
+  # ```
+  # MINITEST_REPORTER=BenderReporter rake test
+  # ```
+
+  module Reporters
+    class BenderReporter < Minitest::Bender
+      def initialize(options = {})
+        super(options.fetch(:io, $stdout), options)
+      end
+      def add_defaults(options)
+        @options = options
+      end
+      def before_test(_test_cls); end
+      def after_test(_test_cls); end
     end
   end
 end
