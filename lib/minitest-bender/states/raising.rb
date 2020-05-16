@@ -1,9 +1,12 @@
+# coding: utf-8
+# frozen_string_literal: true
 module MinitestBender
   module States
     class Raising < Base
-      COLOR = :amber_300
-      LABEL = 'RAISED'.freeze
-      GROUP_LABEL = 'ERRORS'.freeze
+      COLOR = :red # sorry... doesn't work on Windows
+      LABEL = 'RAISED'
+      GROUP_LABEL = 'ERRORS'
+      TAG = '⚡'
 
       def formatted_message(result)
         @formatted_message ||= colored(detailed_error_message(result))

@@ -10,6 +10,7 @@ module Minitest
       @options = options
       @previous_context = nil
       @results = []
+      @results_by_context = {}
       @slowness_podium_is_relevant = false
     end
 
@@ -29,13 +30,14 @@ module Minitest
 
       if current_context != previous_context
         io.puts
-        io.puts(result.header)
+        io.print(result.header + ' ')
         @previous_context = current_context
       end
+      (@results_by_context[current_context] ||= []) << result
 
       @slowness_podium_is_relevant = true if result.time > 0.01
 
-      io.puts result.line_to_report
+      io.print result.compact
     end
 
     def passed?
@@ -43,6 +45,17 @@ module Minitest
     end
 
     def report
+      io.puts
+      io.puts
+      print_divider(:white)
+
+      @results_by_context.keys.sort.each do |context|
+        results = @results_by_context[context]
+        io.puts
+        io.puts(results.first.header)
+        results.sort_by(&:rank).each { |result| io.puts result.line_to_report }
+      end
+
       io.puts
       print_divider(:white)
 

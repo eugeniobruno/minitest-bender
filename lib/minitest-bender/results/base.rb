@@ -4,10 +4,13 @@ module MinitestBender
       extend Forwardable
       def_delegators :@minitest_result, :passed?, :skipped?, :assertions, :failures, :time
 
-      def initialize(minitest_result)
+      def initialize(minitest_result, rank)
         @minitest_result = minitest_result
+        @rank = rank
         @state = MinitestBender.states.fetch(minitest_result.result_code)
       end
+
+      attr_reader :rank, :state
 
       def context
         @context ||=
@@ -20,6 +23,10 @@ module MinitestBender
 
       def header
         Colorin.white("• #{context}").bold
+      end
+
+      def compact
+        @state.tag
       end
 
       def details_header(number)

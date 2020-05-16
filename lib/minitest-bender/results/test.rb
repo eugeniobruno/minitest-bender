@@ -2,7 +2,7 @@ module MinitestBender
   module Results
     class Test < Base
       def initialize(minitest_result, raw_name)
-        super(minitest_result)
+        super(minitest_result, raw_name)
         @raw_name = raw_name
       end
 

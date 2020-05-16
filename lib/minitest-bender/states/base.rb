@@ -9,6 +9,10 @@ module MinitestBender
         @formatted_group_label ||= "  #{colored(group_label).bold.underline}"
       end
 
+      def tag
+        colored(self.class::TAG)
+      end
+
       def print_details(io, results)
         filtered_results = only_with_this_state(results)
         return :no_details if filtered_results.empty?

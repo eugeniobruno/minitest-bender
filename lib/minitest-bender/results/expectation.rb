@@ -2,7 +2,7 @@ module MinitestBender
   module Results
     class Expectation < Base
       def initialize(minitest_result, number, name)
-        super(minitest_result)
+        super(minitest_result, number.to_i)
         @number = number
         @name = name
       end

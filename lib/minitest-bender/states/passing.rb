@@ -1,9 +1,12 @@
+# coding: utf-8
+# frozen_string_literal: true
 module MinitestBender
   module States
     class Passing < Base
-      COLOR = :green_500
-      LABEL = 'PASSED'.freeze
-      GROUP_LABEL = 'PASSING'.freeze
+      COLOR = :green
+      LABEL = 'PASSED'
+      GROUP_LABEL = 'PASSING'
+      TAG = '✔'
 
       def formatted_message(_result)
         ''
