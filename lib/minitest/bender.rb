@@ -58,7 +58,7 @@ module Minitest
         results = @results_by_context[context]
         io.puts
         io.puts(results.first.header)
-        results.sort_by(&:rank).each { |result| io.puts result.line_to_report }
+        results.sort_by(&:sort_key).each { |result| io.puts result.line_to_report }
       end
 
       io.puts

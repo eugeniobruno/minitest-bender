@@ -2,13 +2,17 @@ module MinitestBender
   module Results
     class Expectation < Base
       def initialize(minitest_result, number, name)
-        super(minitest_result, number.to_i)
+        super(minitest_result)
         @number = number
         @name = name
       end
 
       def line_to_report
         "#{formatted_label}#{formatted_time} #{formatted_number} #{name} #{formatted_message}"
+      end
+
+      def sort_key
+        @sort_key ||= number.to_i
       end
 
       private

@@ -2,7 +2,7 @@ module MinitestBender
   module Results
     class Test < Base
       def initialize(minitest_result, raw_name)
-        super(minitest_result, raw_name)
+        super(minitest_result)
         @raw_name = raw_name
       end
 
@@ -12,6 +12,10 @@ module MinitestBender
 
       def line_to_report
         "#{formatted_label}#{formatted_time} #{name} #{formatted_message}"
+      end
+
+      def sort_key
+        raw_name
       end
 
       private
