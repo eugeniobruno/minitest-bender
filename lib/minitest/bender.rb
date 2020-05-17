@@ -3,11 +3,16 @@ require 'minitest_bender'
 
 module Minitest
   class Bender < AbstractReporter
-    def self.enable!; @@is_enabled = true; end
-    def self.enabled?; @@is_enabled ||= false; end
-
     attr_accessor :io, :options
     attr_reader :previous_context, :results, :started_at
+
+    def self.enable!
+      @@is_enabled = true
+    end
+
+    def self.enabled?
+      @@is_enabled ||= false
+    end
 
     def initialize(io, options = {})
       @io = io
@@ -182,10 +187,13 @@ module Minitest
       def initialize(options = {})
         super(options.fetch(:io, $stdout), options)
       end
+
       def add_defaults(options)
         @options = options
       end
+
       def before_test(_test_cls); end
+
       def after_test(_test_cls); end
     end
   end
