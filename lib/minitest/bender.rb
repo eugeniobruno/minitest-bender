@@ -42,7 +42,7 @@ module Minitest
 
       @slowness_podium_is_relevant = true if result.time > 0.01
 
-      io.print result.compact
+      io.print result.to_icon
     end
 
     def passed?

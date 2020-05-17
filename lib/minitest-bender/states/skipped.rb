@@ -7,7 +7,7 @@ module MinitestBender
       COLOR = :cyan
       LABEL = 'SKIPPED'
       GROUP_LABEL = 'SKIPS'
-      TAG = '/'
+      ICON = '/'
 
       def formatted_message(result)
         @formatted_message ||= colored(result.failures[0].message)

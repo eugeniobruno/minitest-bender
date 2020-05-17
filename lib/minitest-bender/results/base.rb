@@ -22,8 +22,8 @@ module MinitestBender
         Colorin.white("• #{context}").bold
       end
 
-      def compact
-        state.tag
+      def to_icon
+        state.colored_icon
       end
 
       def details_header(number)

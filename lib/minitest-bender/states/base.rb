@@ -9,8 +9,8 @@ module MinitestBender
         @formatted_group_label ||= "  #{colored(group_label).bold.underline}"
       end
 
-      def tag
-        colored(self.class::TAG)
+      def colored_icon
+        colored(icon)
       end
 
       def print_details(io, results)
@@ -48,6 +48,10 @@ module MinitestBender
 
       def group_label
         self.class::GROUP_LABEL
+      end
+
+      def icon
+        self.class::ICON
       end
 
       def colored(string)

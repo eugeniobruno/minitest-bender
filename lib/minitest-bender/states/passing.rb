@@ -7,7 +7,7 @@ module MinitestBender
       COLOR = :green
       LABEL = 'PASSED'
       GROUP_LABEL = 'PASSING'
-      TAG = '✔'
+      ICON = '✔'
 
       def formatted_message(_result)
         ''
