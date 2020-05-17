@@ -7,7 +7,7 @@ module MinitestBender
       result_number = number(minitest_result)
       result_name = name(minitest_result)
       if result_number.empty?
-        Results::Test.new(minitest_result, result_name, result_name)
+        Results::Test.new(minitest_result, result_name)
       else
         Results::Expectation.new(minitest_result, result_number, result_name)
       end
