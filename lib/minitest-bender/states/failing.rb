@@ -7,7 +7,7 @@ module MinitestBender
       COLOR = :red
       LABEL = 'FAILED'
       GROUP_LABEL = 'FAILURES'
-      ICON = '❌'
+      ICON = '✖'
 
       def formatted_message(result)
         @formatted_message ||= colored(location(result))
