@@ -4,7 +4,7 @@
 module MinitestBender
   module States
     class Raising < Base
-      COLOR = :red # sorry... doesn't work on Windows
+      COLOR = :amber_300
       LABEL = 'RAISED'
       GROUP_LABEL = 'ERRORS'
       ICON = '💥'
@@ -29,7 +29,7 @@ module MinitestBender
       def do_print_details(io, result, padding)
         io.puts "#{padding}#{colored(error_message(result))}"
         backtrace(result).each do |line|
-          io.puts "#{padding}#{Colorin.brown_400(line)}"
+          io.puts "#{padding}#{Colorizer.colorize(:brown_400, line)}"
         end
       end
 

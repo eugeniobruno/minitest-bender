@@ -4,7 +4,7 @@
 module MinitestBender
   module States
     class Skipped < Base
-      COLOR = :cyan
+      COLOR = :cyan_300
       LABEL = 'SKIPPED'
       GROUP_LABEL = 'SKIPS'
       ICON = '/'

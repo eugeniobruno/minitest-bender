@@ -3,6 +3,8 @@ require 'minitest_bender'
 
 module Minitest
   class Bender < AbstractReporter
+    Colorizer = MinitestBender::Colorizer
+
     attr_reader :io, :options, :previous_context, :results, :started_at
 
     def initialize(io, options = {})
@@ -17,8 +19,8 @@ module Minitest
     def start
       @started_at = Time.now
       io.puts
-      io.puts Colorin.white("Minitest started at #{started_at}")
-      io.puts Colorin.white("Options: #{options_args}")
+      io.puts Colorizer.colorize(:white, "Minitest started at #{started_at}")
+      io.puts Colorizer.colorize(:white, "Options: #{options_args}")
       io.puts
     end
 
@@ -108,7 +110,7 @@ module Minitest
     end
 
     def print_divider(color)
-      io.puts(Colorin.public_send(color, '  _______________________').bold)
+      io.puts(Colorizer.colorize(color, '  _______________________').bold)
       io.puts
     end
 
@@ -121,19 +123,19 @@ module Minitest
     def print_statistics
       total_tests = "#{test_count} tests"
       total_tests = total_tests.chop if test_count == 1
-      formatted_total_tests = Colorin.blue_a700(total_tests)
+      formatted_total_tests = Colorizer.colorize(:blue_a700, total_tests)
 
       total_assertions = "#{assertion_count} assertions"
       total_assertions = total_assertions.chop if assertion_count == 1
-      formatted_total_assertions = Colorin.purple_400(total_assertions)
+      formatted_total_assertions = Colorizer.colorize(:purple_400, total_assertions)
 
       auxiliary_verb = test_count == 1 ? 'was' : 'were'
 
       total_time = (Time.now - started_at).round(3)
-      formatted_total_time = Colorin.grey_700("#{total_time} seconds")
+      formatted_total_time = Colorizer.colorize(:grey_700, "#{total_time} seconds")
 
-      tests_rate = Colorin.grey_700("#{(test_count / total_time).round(4)} tests/s")
-      assertions_rate = Colorin.grey_700("#{(assertion_count / total_time).round(4)} assertions/s")
+      tests_rate = Colorizer.colorize(:grey_700, "#{(test_count / total_time).round(4)} tests/s")
+      assertions_rate = Colorizer.colorize(:grey_700, "#{(assertion_count / total_time).round(4)} assertions/s")
 
       io.puts "  #{formatted_total_tests} with #{formatted_total_assertions} #{auxiliary_verb} run in #{formatted_total_time} (#{tests_rate}, #{assertions_rate})"
     end
@@ -143,7 +145,7 @@ module Minitest
       final_divider_color = all_passed_color
 
       if passed_without_skips? && run_all_tests?
-        message = Colorin.public_send(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
+        message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
       else
         messages = MinitestBender.states.values.map do |state|
           summary_message = state.summary_message(results)
@@ -170,7 +172,7 @@ module Minitest
     end
 
     def formatted_slowness_podium_label
-      "  #{Colorin.grey_700('SLOWNESS PODIUM').bold.underline}"
+      "  #{Colorizer.colorize(:grey_700, 'SLOWNESS PODIUM').bold.underline}"
     end
   end
 end

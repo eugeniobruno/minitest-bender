@@ -20,7 +20,7 @@ module MinitestBender
       attr_reader :number, :name
 
       def formatted_number
-        "#{Colorin.brown_400(number)} "
+        "#{Colorizer.colorize(:brown_400, number)} "
       end
 
       def name_for_rerun_command

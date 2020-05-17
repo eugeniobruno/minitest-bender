@@ -19,7 +19,7 @@ module MinitestBender
       end
 
       def header
-        Colorin.white("• #{context}").bold
+        Colorizer.colorize(:white, "• #{context}").bold
       end
 
       def to_icon
@@ -27,12 +27,12 @@ module MinitestBender
       end
 
       def details_header(number)
-        "    #{number}#{Colorin.white(context)} > #{name}"
+        "    #{number}#{Colorizer.colorize(:white, context)} > #{name}"
       end
 
       def rerun_line(padding)
         unformatted = "Rerun: #{rerun_command}"
-        "#{padding}#{Colorin.blue_a700(unformatted)}"
+        "#{padding}#{Colorizer.colorize(:blue_a700, unformatted)}"
       end
 
       def state?(some_state)
@@ -40,7 +40,7 @@ module MinitestBender
       end
 
       def line_for_slowness_podium
-        "#{formatted_time} #{Colorin.white(context)} > #{name}"
+        "#{formatted_time} #{Colorizer.colorize(:white, context)} > #{name}"
       end
 
       private
@@ -70,7 +70,7 @@ module MinitestBender
           else
             sprintf('%.0fs', time_in_s)
           end
-        Colorin.grey_700(time_with_unit.rjust(6))
+        Colorizer.colorize(:grey_700, time_with_unit.rjust(6))
       end
 
       def rerun_command

@@ -2,6 +2,8 @@ require 'colorin'
 
 require 'minitest-bender/version'
 
+require 'minitest-bender/colorizer'
+
 require 'minitest-bender/states/base'
 require 'minitest-bender/states/passing'
 require 'minitest-bender/states/skipped'
