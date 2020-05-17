@@ -188,8 +188,8 @@ module Minitest
         super(options.fetch(:io, $stdout), options)
       end
 
-      def add_defaults(options)
-        @options = options
+      def add_defaults(defaults)
+        @options = defaults.merge(options)
       end
 
       def before_test(_test_cls); end
