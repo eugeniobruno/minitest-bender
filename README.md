@@ -28,9 +28,19 @@ Require this plugin right after Minitest:
 ```ruby
 require 'minitest/autorun'
 require 'minitest/bender'
+Minitest::Bender.enable!
 ```
 
 That's it! The next time you run your tests, a new report format will be used instead of the default one.
+
+Instead of `Minitest::Bender.enable!`, you can also specify the `--bender` test option, e.g.
+
+    $ rake test TESTOPTS=--bender
+
+If you already have [minitest-reporters](https://github.com/kern/minitest-reporters) installed and activated, you can select the `BenderReporter` as (one of the) reporters:
+
+    $ MINITEST_REPORTER=BenderReporter,HtmlReporter rake test
+
 
 ## Features
 
