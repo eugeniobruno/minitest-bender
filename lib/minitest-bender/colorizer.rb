@@ -32,7 +32,7 @@ module MinitestBender
       end
 
       def windows?
-        @windows ||= RbConfig::CONFIG['host_os'] =~ /mswin/
+        @windows ||= RbConfig::CONFIG['host_os'] =~ /mswin|mingw32/
       end
     end
   end
