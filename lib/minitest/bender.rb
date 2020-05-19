@@ -6,7 +6,7 @@ module Minitest
     Colorizer = MinitestBender::Colorizer
 
     attr_accessor :io, :options
-    attr_reader :previous_context, :results, :started_at
+    attr_reader :previous_context, :results, :results_by_context, :started_at
 
     def self.enable!
       @@is_enabled = true
@@ -46,10 +46,11 @@ module Minitest
 
       if current_context != previous_context
         io.puts
-        io.print(result.header + ' ')
+        io.print("#{result.header} ")
         @previous_context = current_context
       end
-      (@results_by_context[current_context] ||= []) << result
+
+      (results_by_context[current_context] ||= []) << result
 
       @slowness_podium_is_relevant = true if result.time > 0.01
 
@@ -65,8 +66,7 @@ module Minitest
       io.puts
       print_divider(:white)
 
-      @results_by_context.keys.sort.each do |context|
-        results = @results_by_context[context]
+      results_by_context.sort.each do |context, results|
         io.puts
         io.puts(results.first.header)
         results.sort_by(&:sort_key).each { |result| io.puts result.line_to_report }
