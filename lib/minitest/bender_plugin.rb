@@ -11,5 +11,9 @@ module Minitest
     opts.on '--bender', 'Use Minitest::Bender test reporter' do
       Bender.enable!
     end
+
+    opts.on '--bender-verbose', 'Use Minitest::Bender test reporter and run each test verbosely' do
+      Bender.enable!({ recorder: :verbose })
+    end
   end
 end

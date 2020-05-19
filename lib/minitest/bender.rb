@@ -8,8 +8,9 @@ module Minitest
     attr_accessor :io, :options
     attr_reader :previous_context, :results, :results_by_context, :started_at
 
-    def self.enable!
+    def self.enable!(options = {})
       @@is_enabled = true
+      @@recorder = options.fetch(:recorder, :icons)
     end
 
     def self.enabled?
@@ -46,7 +47,13 @@ module Minitest
 
       if current_context != previous_context
         io.puts
-        io.print("#{result.header} ")
+
+        if verbose_recorder?
+          io.puts(result.header)
+        else
+          io.print("#{result.header} ")
+        end
+
         @previous_context = current_context
       end
 
@@ -54,7 +61,11 @@ module Minitest
 
       @slowness_podium_is_relevant = true if result.time > 0.01
 
-      io.print result.to_icon
+      if verbose_recorder?
+        io.puts result.line_to_report
+      else
+        io.print result.to_icon
+      end
     end
 
     def passed?
@@ -92,6 +103,10 @@ module Minitest
 
     def options_args
       options.fetch(:args, '(none)')
+    end
+
+    def verbose_recorder?
+      @@recorder == :verbose
     end
 
     def passed_without_skips?
