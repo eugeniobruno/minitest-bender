@@ -11,5 +11,13 @@ module Minitest
     opts.on '--bender', 'Use Minitest::Bender test reporter' do
       Bender.enable!
     end
+    opts.on '--bender-verbose',
+            'Bender report details of test failure as they happen' do
+      Bender.verbose!
+    end
+    opts.on '--bender-no-sorted-overview',
+            'Bender will not show the sorted overview section' do
+      Bender.no_sorted_overview!
+    end
   end
 end
