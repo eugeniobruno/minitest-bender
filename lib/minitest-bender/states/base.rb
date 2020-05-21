@@ -20,16 +20,20 @@ module MinitestBender
         io.puts formatted_group_label
         io.puts
         filtered_results.each_with_index do |result, i|
-          number = "#{i + 1})".ljust(4)
-          padding = ' ' * (number.size + 4)
-          io.puts(result.details_header(number))
-          do_print_details(io, result, padding)
-          io.puts
-          io.puts(result.rerun_line(padding))
+          print_detail(io, i + 1, result)
           io.puts if i < filtered_results.size - 1
         end
         io.puts
         :printed_details
+      end
+
+      def print_detail(io, i, result)
+        number = "#{i})".ljust(4)
+        padding = ' ' * (number.size + 4)
+        io.puts(result.details_header(number))
+        do_print_details(io, result, padding)
+        io.puts
+        io.puts(result.rerun_line(padding))
       end
 
       def color

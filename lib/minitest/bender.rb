@@ -10,7 +10,12 @@ module Minitest
 
     def self.enable!(options = {})
       @@is_enabled = true
-      @@recorder = options.fetch(:recorder, :icons)
+      @@recorder ||= :icons
+      @@overview ||= :sorted
+      @@recorder = options[:recorder] if options.include?(:recorder)
+      @@overview = options[:overview] if options.include?(:overview)
+      # Note: `--bender-verbose --bender-no-sorted-overview` and
+      # `--bender-no-sorted-overview --bender-verbose` must have same effect
     end
 
     def self.enabled?
@@ -24,6 +29,7 @@ module Minitest
       @results = []
       @results_by_context = {}
       @slowness_podium_is_relevant = false
+      @state_counters = Hash.new { |state| @state_counters[state] = 0 }
     end
 
     def start
@@ -32,13 +38,11 @@ module Minitest
       io.puts Colorizer.colorize(:white, "Minitest started at #{started_at}")
       io.puts Colorizer.colorize(:white, "Options: #{options_args}")
       io.puts
+      io.flush
     end
 
     def record(minitest_result)
-      # as we might already have some output from the test itself,
-      # make sure we see *all* of it before we report anything
-      STDOUT.flush
-      STDERR.flush
+      flush_stdio
 
       result = MinitestBender.result_factory.create(minitest_result)
       results << result
@@ -62,10 +66,18 @@ module Minitest
       @slowness_podium_is_relevant = true if result.time > 0.01
 
       if verbose_recorder?
-        io.puts result.line_to_report
+        print_verbose_result(result)
       else
         io.print result.to_icon
       end
+      io.flush
+    end
+
+    def flush_stdio
+      # as we might already have some output from the test itself,
+      # make sure we see *all* of it before we report anything
+      STDOUT.flush
+      STDERR.flush
     end
 
     def passed?
@@ -77,14 +89,9 @@ module Minitest
       io.puts
       print_divider(:white)
 
-      results_by_context.sort.each do |context, results|
-        io.puts
-        io.puts(results.first.header)
-        results.sort_by(&:sort_key).each { |result| io.puts result.line_to_report }
+      if sorted_overview_enabled? && results.size > 1
+        print_sorted_overview
       end
-
-      io.puts
-      print_divider(:white)
 
       print_details
 
@@ -107,6 +114,10 @@ module Minitest
 
     def verbose_recorder?
       @@recorder == :verbose
+    end
+
+    def sorted_overview_enabled?
+      @@overview == :sorted
     end
 
     def passed_without_skips?
@@ -138,10 +149,36 @@ module Minitest
       io.puts
     end
 
+    def print_sorted_overview
+      io.puts(formatted_label(:white, 'SORTED OVERVIEW'))
+      io.puts
+      @results_by_context.keys.sort.each do |context|
+        results = @results_by_context[context]
+        io.puts
+        io.puts(results.first.header)
+        results.sort_by(&:sort_key).each do |result|
+          io.puts result.line_to_report
+        end
+      end
+      io.puts
+      print_divider(:white)
+    end
+
     def print_details
       states = MinitestBender.states.values
       symbols = states.map { |state| state.print_details(io, results) }
       io.puts unless symbols.all? { |symbol| symbol == :no_details }
+    end
+
+    def print_verbose_result(result)
+      io.puts result.line_to_report
+      unless result.passed?
+        MinitestBender.states.values.each do |state|
+          next unless result.state?(state)
+
+          state.print_detail(io, @state_counters[state] += 1, result)
+        end
+      end
     end
 
     def print_statistics
@@ -187,7 +224,7 @@ module Minitest
     def print_slowness_podium
       results.sort_by! { |r| -r.time }
 
-      io.puts(formatted_slowness_podium_label)
+      io.puts(formatted_label(:grey_700, 'SLOWNESS PODIUM'))
       io.puts
       results.take(3).each_with_index do |result, i|
         number = "#{i + 1})".ljust(4)
@@ -195,8 +232,8 @@ module Minitest
       end
     end
 
-    def formatted_slowness_podium_label
-      "  #{Colorizer.colorize(:grey_700, 'SLOWNESS PODIUM').bold.underline}"
+    def formatted_label(color, label)
+      "  #{Colorizer.colorize(color, label).bold.underline}"
     end
   end
 
@@ -221,6 +258,7 @@ module Minitest
     class BenderReporter < Minitest::Bender
       def initialize(options = {})
         super(options.fetch(:io, $stdout), options)
+        Minitest::Bender.enable!
       end
 
       def add_defaults(defaults)
