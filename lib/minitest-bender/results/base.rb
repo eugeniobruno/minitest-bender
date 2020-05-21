@@ -6,10 +6,12 @@ module MinitestBender
     class Base
       extend Forwardable
       def_delegators :@minitest_result, :passed?, :skipped?, :assertions, :failures, :time
+      attr_reader :state, :execution_order
 
       def initialize(minitest_result)
         @minitest_result = minitest_result
         @state = MinitestBender.states.fetch(minitest_result.result_code)
+        @execution_order = @state.incr
       end
 
       def context
@@ -48,7 +50,7 @@ module MinitestBender
 
       private
 
-      attr_reader :minitest_result, :state
+      attr_reader :minitest_result
 
       def formatted_label
         "    #{state.formatted_label}"

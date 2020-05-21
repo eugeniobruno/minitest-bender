@@ -20,15 +20,15 @@ module MinitestBender
         io.puts formatted_group_label
         io.puts
         filtered_results.each_with_index do |result, i|
-          print_detail(io, i + 1, result)
+          print_detail(io, result)
           io.puts if i < filtered_results.size - 1
         end
         io.puts
         :printed_details
       end
 
-      def print_detail(io, i, result)
-        number = "#{i})".ljust(4)
+      def print_detail(io, result)
+        number = "#{result.execution_order})".ljust(4)
         padding = ' ' * (number.size + 4)
         io.puts(result.details_header(number))
         do_print_details(io, result, padding)
@@ -42,6 +42,11 @@ module MinitestBender
 
       def test_location(result)
         location(result)
+      end
+
+      def incr
+        @i ||= 0
+        @i += 1
       end
 
       private

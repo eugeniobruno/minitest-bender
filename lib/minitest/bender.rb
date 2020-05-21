@@ -29,7 +29,6 @@ module Minitest
       @results = []
       @results_by_context = {}
       @slowness_podium_is_relevant = false
-      @state_counters = Hash.new { |state| @state_counters[state] = 0 }
     end
 
     def start
@@ -172,13 +171,7 @@ module Minitest
 
     def print_verbose_result(result)
       io.puts result.line_to_report
-      unless result.passed?
-        MinitestBender.states.values.each do |state|
-          next unless result.state?(state)
-
-          state.print_detail(io, @state_counters[state] += 1, result)
-        end
-      end
+      result.state.print_detail(io, result) unless result.passed?
     end
 
     def print_statistics
