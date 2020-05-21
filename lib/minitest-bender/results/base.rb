@@ -8,6 +8,9 @@ module MinitestBender
       def_delegators :@minitest_result, :passed?, :skipped?, :assertions, :failures, :time
       attr_reader :state, :execution_order
 
+      CLASS_SEP = ' ▸ '
+      NAME_SEP =  ' ◆ '
+
       def initialize(minitest_result)
         @minitest_result = minitest_result
         @state = MinitestBender.states.fetch(minitest_result.result_code)
@@ -20,7 +23,7 @@ module MinitestBender
             minitest_result.klass
           else
             minitest_result.class.name
-          end.gsub('::', ' ▸ ')
+          end.gsub('::', CLASS_SEP)
       end
 
       def header
@@ -32,7 +35,7 @@ module MinitestBender
       end
 
       def details_header(number)
-        "    #{number}#{Colorizer.colorize(:white, context)} > #{name}"
+        "    #{number}#{Colorizer.colorize(:white, context)}#{NAME_SEP}#{name}"
       end
 
       def rerun_line(padding)
@@ -45,7 +48,7 @@ module MinitestBender
       end
 
       def line_for_slowness_podium
-        "#{formatted_time} #{Colorizer.colorize(:white, context)} > #{name}"
+        "#{formatted_time} #{Colorizer.colorize(:white, context)}#{NAME_SEP}#{name}"
       end
 
       private
