@@ -75,7 +75,7 @@ module MinitestBender
         result.failures[0].message.split("\n").each do |line|
           io.puts "#{padding}#{colored(line)}"
         end
-        io.puts "#{padding}#{Colorizer.colorize(:brown_400, location(result))}"
+        io.puts "#{padding}#{Colorizer.colorize(:brown_400, location(result))}:"
       end
 
       def location(result)
