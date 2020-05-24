@@ -151,8 +151,7 @@ module Minitest
     def print_sorted_overview
       io.puts(formatted_label(:white, 'SORTED OVERVIEW'))
       io.puts
-      @results_by_context.keys.sort.each do |context|
-        results = @results_by_context[context]
+      results_by_context.sort.each do |context, results|
         io.puts
         io.puts(results.first.header)
         results.sort_by(&:sort_key).each do |result|
