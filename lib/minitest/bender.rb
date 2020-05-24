@@ -5,17 +5,17 @@ module Minitest
   class Bender < AbstractReporter
     Colorizer = MinitestBender::Colorizer
 
+    @@reporter_options = {
+      recorder: :compact,
+      overview: :sorted
+    }
+
     attr_accessor :io, :options
     attr_reader :previous_context, :results, :results_by_context, :started_at
 
-    def self.enable!(options = {})
+    def self.enable!(reporter_options = {})
       @@is_enabled = true
-      @@recorder ||= :icons
-      @@overview ||= :sorted
-      @@recorder = options[:recorder] if options.include?(:recorder)
-      @@overview = options[:overview] if options.include?(:overview)
-      # Note: `--bender-verbose --bender-no-sorted-overview` and
-      # `--bender-no-sorted-overview --bender-verbose` must have same effect
+      @@reporter_options.merge!(reporter_options)
     end
 
     def self.enabled?
@@ -112,11 +112,11 @@ module Minitest
     end
 
     def verbose_recorder?
-      @@recorder == :verbose
+      @@reporter_options.fetch(:recorder) == :verbose
     end
 
     def sorted_overview_enabled?
-      @@overview == :sorted
+      @@reporter_options.fetch(:overview) == :sorted
     end
 
     def passed_without_skips?

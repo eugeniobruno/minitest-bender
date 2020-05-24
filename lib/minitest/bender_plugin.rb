@@ -8,15 +8,15 @@ module Minitest
   end
 
   def self.plugin_bender_options(opts, _options)
-    opts.on '--bender', 'Use Minitest::Bender test reporter' do
+    opts.on '--bender', 'Enable Bender: the coolest CLI reporter.' do
       Bender.enable!
     end
-    opts.on '--bender-verbose',
-            'Bender report details of test failure as they happen' do
-      Bender.enable!({ recorder: :verbose })
+
+    opts.on '--bender-recorder=RECORDER', 'Bender: choose how test results are printed as the suite runs. (compact | verbose)' do |r|
+      Bender.enable!({ recorder: r.to_sym })
     end
-    opts.on '--bender-no-sorted-overview',
-            'Bender will not show the sorted overview section' do
+
+    opts.on('--bender-no-overview', 'Bender: skip the overview of sorted results.') do
       Bender.enable!({ overview: :none })
     end
   end
