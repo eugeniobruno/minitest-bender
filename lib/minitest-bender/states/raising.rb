@@ -1,9 +1,13 @@
+# coding: utf-8
+# frozen_string_literal: true
+
 module MinitestBender
   module States
     class Raising < Base
       COLOR = :amber_300
-      LABEL = 'RAISED'.freeze
-      GROUP_LABEL = 'ERRORS'.freeze
+      LABEL = 'RAISED'
+      GROUP_LABEL = 'ERRORS'
+      ICON = '💥'
 
       def formatted_message(result)
         @formatted_message ||= colored(detailed_error_message(result))
@@ -25,7 +29,7 @@ module MinitestBender
       def do_print_details(io, result, padding)
         io.puts "#{padding}#{colored(error_message(result))}"
         backtrace(result).each do |line|
-          io.puts "#{padding}#{Colorin.brown_400(line)}"
+          io.puts "#{padding}#{Colorizer.colorize(:brown_400, line)}"
         end
       end
 

@@ -1,9 +1,13 @@
+# coding: utf-8
+# frozen_string_literal: true
+
 module MinitestBender
   module States
     class Skipped < Base
       COLOR = :cyan_300
-      LABEL = 'SKIPPED'.freeze
-      GROUP_LABEL = 'SKIPS'.freeze
+      LABEL = 'SKIPPED'
+      GROUP_LABEL = 'SKIPS'
+      ICON = '/'
 
       def formatted_message(result)
         @formatted_message ||= colored(result.failures[0].message)

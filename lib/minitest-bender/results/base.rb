@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 require 'forwardable'
 
 module MinitestBender
@@ -6,10 +7,15 @@ module MinitestBender
     class Base
       extend Forwardable
       def_delegators :@minitest_result, :passed?, :skipped?, :assertions, :failures, :time
+      attr_reader :state, :execution_order
+
+      CLASS_SEP = ' ▸ '
+      NAME_SEP =  ' ◆ '
 
       def initialize(minitest_result)
         @minitest_result = minitest_result
         @state = MinitestBender.states.fetch(minitest_result.result_code)
+        @execution_order = @state.incr
       end
 
       def context
@@ -18,20 +24,24 @@ module MinitestBender
             minitest_result.klass
           else
             minitest_result.class.name
-          end.gsub('::', ' ▸ ')
+          end.gsub('::', CLASS_SEP)
       end
 
       def header
-        Colorin.white("• #{context}").bold
+        Colorizer.colorize(:white, "• #{context}").bold
+      end
+
+      def to_icon
+        state.colored_icon
       end
 
       def details_header(number)
-        "    #{number}#{Colorin.white(context)} > #{name}"
+        "    #{number}#{Colorizer.colorize(:white, context)}#{NAME_SEP}#{name}"
       end
 
       def rerun_line(padding)
         unformatted = "Rerun: #{rerun_command}"
-        "#{padding}#{Colorin.blue_a700(unformatted)}"
+        "#{padding}#{Colorizer.colorize(:blue_a700, unformatted)}"
       end
 
       def state?(some_state)
@@ -39,12 +49,12 @@ module MinitestBender
       end
 
       def line_for_slowness_podium
-        "#{formatted_time} #{Colorin.white(context)} > #{name}"
+        "#{formatted_time} #{Colorizer.colorize(:white, context)}#{NAME_SEP}#{name}"
       end
 
       private
 
-      attr_reader :minitest_result, :state
+      attr_reader :minitest_result
 
       def formatted_label
         "    #{state.formatted_label}"
@@ -69,7 +79,7 @@ module MinitestBender
           else
             sprintf('%.0fs', time_in_s)
           end
-        Colorin.grey_700(time_with_unit.rjust(6))
+        Colorizer.colorize(:grey_700, time_with_unit.rjust(6))
       end
 
       def rerun_command

@@ -14,6 +14,10 @@ module MinitestBender
         "#{formatted_label}#{formatted_time} #{name} #{formatted_message}"
       end
 
+      def sort_key
+        raw_name
+      end
+
       private
 
       attr_reader :raw_name

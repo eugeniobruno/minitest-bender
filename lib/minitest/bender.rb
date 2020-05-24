@@ -3,11 +3,19 @@ require 'minitest_bender'
 
 module Minitest
   class Bender < AbstractReporter
-    attr_accessor :io, :options
-    attr_reader :previous_context, :results, :started_at
+    Colorizer = MinitestBender::Colorizer
 
-    def self.enable!
+    @@reporter_options = {
+      recorder: :compact,
+      overview: :sorted
+    }
+
+    attr_accessor :io, :options
+    attr_reader :previous_context, :results, :results_by_context, :started_at
+
+    def self.enable!(reporter_options = {})
       @@is_enabled = true
+      @@reporter_options.merge!(reporter_options)
     end
 
     def self.enabled?
@@ -19,18 +27,22 @@ module Minitest
       @options = options
       @previous_context = nil
       @results = []
+      @results_by_context = {}
       @slowness_podium_is_relevant = false
     end
 
     def start
       @started_at = Time.now
       io.puts
-      io.puts Colorin.white("Minitest started at #{started_at}")
-      io.puts Colorin.white("Options: #{options_args}")
+      io.puts Colorizer.colorize(:white, "Minitest started at #{started_at}")
+      io.puts Colorizer.colorize(:white, "Options: #{options_args}")
       io.puts
+      io.flush
     end
 
     def record(minitest_result)
+      flush_stdio
+
       result = MinitestBender.result_factory.create(minitest_result)
       results << result
 
@@ -38,13 +50,33 @@ module Minitest
 
       if current_context != previous_context
         io.puts
-        io.puts(result.header)
+
+        if verbose_recorder?
+          io.puts(result.header)
+        else
+          io.print("#{result.header} ")
+        end
+
         @previous_context = current_context
       end
 
+      (results_by_context[current_context] ||= []) << result
+
       @slowness_podium_is_relevant = true if result.time > 0.01
 
-      io.puts result.line_to_report
+      if verbose_recorder?
+        print_verbose_result(result)
+      else
+        io.print result.to_icon
+      end
+      io.flush
+    end
+
+    def flush_stdio
+      # as we might already have some output from the test itself,
+      # make sure we see *all* of it before we report anything
+      STDOUT.flush
+      STDERR.flush
     end
 
     def passed?
@@ -53,7 +85,12 @@ module Minitest
 
     def report
       io.puts
+      io.puts
       print_divider(:white)
+
+      if sorted_overview_enabled? && results.size > 1
+        print_sorted_overview
+      end
 
       print_details
 
@@ -72,6 +109,14 @@ module Minitest
 
     def options_args
       options.fetch(:args, '(none)')
+    end
+
+    def verbose_recorder?
+      @@reporter_options.fetch(:recorder) == :verbose
+    end
+
+    def sorted_overview_enabled?
+      @@reporter_options.fetch(:overview) == :sorted
     end
 
     def passed_without_skips?
@@ -99,8 +144,22 @@ module Minitest
     end
 
     def print_divider(color)
-      io.puts(Colorin.public_send(color, '  _______________________').bold)
+      io.puts(Colorizer.colorize(color, '  _______________________').bold)
       io.puts
+    end
+
+    def print_sorted_overview
+      io.puts(formatted_label(:white, 'SORTED OVERVIEW'))
+      io.puts
+      results_by_context.sort.each do |context, results|
+        io.puts
+        io.puts(results.first.header)
+        results.sort_by(&:sort_key).each do |result|
+          io.puts result.line_to_report
+        end
+      end
+      io.puts
+      print_divider(:white)
     end
 
     def print_details
@@ -109,22 +168,27 @@ module Minitest
       io.puts unless symbols.all? { |symbol| symbol == :no_details }
     end
 
+    def print_verbose_result(result)
+      io.puts result.line_to_report
+      result.state.print_detail(io, result) unless result.passed?
+    end
+
     def print_statistics
       total_tests = "#{test_count} tests"
       total_tests = total_tests.chop if test_count == 1
-      formatted_total_tests = Colorin.blue_a700(total_tests)
+      formatted_total_tests = Colorizer.colorize(:blue_a700, total_tests)
 
       total_assertions = "#{assertion_count} assertions"
       total_assertions = total_assertions.chop if assertion_count == 1
-      formatted_total_assertions = Colorin.purple_400(total_assertions)
+      formatted_total_assertions = Colorizer.colorize(:purple_400, total_assertions)
 
       auxiliary_verb = test_count == 1 ? 'was' : 'were'
 
       total_time = (Time.now - started_at).round(3)
-      formatted_total_time = Colorin.grey_700("#{total_time} seconds")
+      formatted_total_time = Colorizer.colorize(:grey_700, "#{total_time} seconds")
 
-      tests_rate = Colorin.grey_700("#{(test_count / total_time).round(4)} tests/s")
-      assertions_rate = Colorin.grey_700("#{(assertion_count / total_time).round(4)} assertions/s")
+      tests_rate = Colorizer.colorize(:grey_700, "#{(test_count / total_time).round(4)} tests/s")
+      assertions_rate = Colorizer.colorize(:grey_700, "#{(assertion_count / total_time).round(4)} assertions/s")
 
       io.puts "  #{formatted_total_tests} with #{formatted_total_assertions} #{auxiliary_verb} run in #{formatted_total_time} (#{tests_rate}, #{assertions_rate})"
     end
@@ -134,7 +198,7 @@ module Minitest
       final_divider_color = all_passed_color
 
       if passed_without_skips? && run_all_tests?
-        message = Colorin.public_send(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
+        message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
       else
         messages = MinitestBender.states.values.map do |state|
           summary_message = state.summary_message(results)
@@ -152,7 +216,7 @@ module Minitest
     def print_slowness_podium
       results.sort_by! { |r| -r.time }
 
-      io.puts(formatted_slowness_podium_label)
+      io.puts(formatted_label(:grey_700, 'SLOWNESS PODIUM'))
       io.puts
       results.take(3).each_with_index do |result, i|
         number = "#{i + 1})".ljust(4)
@@ -160,8 +224,8 @@ module Minitest
       end
     end
 
-    def formatted_slowness_podium_label
-      "  #{Colorin.grey_700('SLOWNESS PODIUM').bold.underline}"
+    def formatted_label(color, label)
+      "  #{Colorizer.colorize(color, label).bold.underline}"
     end
   end
 
@@ -186,6 +250,7 @@ module Minitest
     class BenderReporter < Minitest::Bender
       def initialize(options = {})
         super(options.fetch(:io, $stdout), options)
+        Minitest::Bender.enable!
       end
 
       def add_defaults(defaults)

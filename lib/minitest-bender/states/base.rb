@@ -9,6 +9,10 @@ module MinitestBender
         @formatted_group_label ||= "  #{colored(group_label).bold.underline}"
       end
 
+      def colored_icon
+        colored(icon)
+      end
+
       def print_details(io, results)
         filtered_results = only_with_this_state(results)
         return :no_details if filtered_results.empty?
@@ -16,16 +20,20 @@ module MinitestBender
         io.puts formatted_group_label
         io.puts
         filtered_results.each_with_index do |result, i|
-          number = "#{i + 1})".ljust(4)
-          padding = ' ' * (number.size + 4)
-          io.puts(result.details_header(number))
-          do_print_details(io, result, padding)
-          io.puts
-          io.puts(result.rerun_line(padding))
+          print_detail(io, result)
           io.puts if i < filtered_results.size - 1
         end
         io.puts
         :printed_details
+      end
+
+      def print_detail(io, result)
+        number = "#{result.execution_order})".ljust(4)
+        padding = ' ' * (number.size + 4)
+        io.puts(result.details_header(number))
+        do_print_details(io, result, padding)
+        io.puts
+        io.puts(result.rerun_line(padding))
       end
 
       def color
@@ -34,6 +42,11 @@ module MinitestBender
 
       def test_location(result)
         location(result)
+      end
+
+      def incr
+        @i ||= 0
+        @i += 1
       end
 
       private
@@ -46,8 +59,12 @@ module MinitestBender
         self.class::GROUP_LABEL
       end
 
+      def icon
+        self.class::ICON
+      end
+
       def colored(string)
-        Colorin.public_send(color, string)
+        Colorizer.colorize(color, string)
       end
 
       def only_with_this_state(results)
@@ -58,7 +75,7 @@ module MinitestBender
         result.failures[0].message.split("\n").each do |line|
           io.puts "#{padding}#{colored(line)}"
         end
-        io.puts "#{padding}#{Colorin.brown_400(location(result))}"
+        io.puts "#{padding}#{Colorizer.colorize(:brown_400, location(result))}:"
       end
 
       def location(result)

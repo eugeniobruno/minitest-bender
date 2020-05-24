@@ -11,12 +11,16 @@ module MinitestBender
         "#{formatted_label}#{formatted_time} #{formatted_number} #{name} #{formatted_message}"
       end
 
+      def sort_key
+        @sort_key ||= number.to_i
+      end
+
       private
 
       attr_reader :number, :name
 
       def formatted_number
-        "#{Colorin.brown_400(number)} "
+        "#{Colorizer.colorize(:brown_400, number)} "
       end
 
       def name_for_rerun_command
