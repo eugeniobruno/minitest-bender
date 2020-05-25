@@ -20,8 +20,14 @@ module MinitestBender
       end
 
       def test_location(result)
-        backtrace_line = backtrace(result).select { |line| line =~ /\/test\/|\/spec\// }.last
-        Utils.relative_path(backtrace_line).split(':').first
+        backtrace_line = backtrace(result).select do |line|
+          File.dirname(line) == '.' || line =~ %r{(^|/)(test|spec)/}
+        end.last
+        if backtrace_line
+          Utils.relative_path(backtrace_line).split(':').first
+        else
+          "(test location can't be deduced from backtrace)"
+        end
       end
 
       private
