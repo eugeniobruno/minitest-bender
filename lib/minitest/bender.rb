@@ -197,7 +197,10 @@ module Minitest
       all_passed_color = MinitestBender.passing_color
       final_divider_color = all_passed_color
 
-      if passed_without_skips? && run_all_tests?
+      if results.empty?
+        message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!') +
+                  ' (well, that was easy, as no tests were run...)'
+      elsif passed_without_skips? && run_all_tests?
         message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
       else
         messages = MinitestBender.states.values.map do |state|
