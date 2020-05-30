@@ -84,6 +84,11 @@ module Minitest
     end
 
     def report
+      if results.empty?
+        print_no_tests_status
+        return
+      end
+
       io.puts
       io.puts
       print_divider(:white)
@@ -143,9 +148,16 @@ module Minitest
       @assertion_count ||= results.reduce(0) { |acum, result| acum + result.assertions }
     end
 
-    def print_divider(color)
-      io.puts(Colorizer.colorize(color, '  _______________________').bold)
+    def print_divider(color, line_length = 23)
+      io.puts(Colorizer.colorize(color, "  #{'_' * line_length}").bold)
       io.puts
+    end
+
+    def print_no_tests_status
+      message = 'NO TESTS WERE RUN!  (-_-)zzz'
+      padded_message = "  #{message}"
+      io.puts(Colorizer.colorize(:blue_a700, padded_message))
+      print_divider(:blue_a700, message.length)
     end
 
     def print_sorted_overview
@@ -197,10 +209,7 @@ module Minitest
       all_passed_color = MinitestBender.passing_color
       final_divider_color = all_passed_color
 
-      if results.empty?
-        message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!') +
-                  ' (well, that was easy, as no tests were run...)'
-      elsif passed_without_skips? && run_all_tests?
+      if passed_without_skips? && run_all_tests?
         message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
       else
         messages = MinitestBender.states.values.map do |state|
