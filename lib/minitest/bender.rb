@@ -124,12 +124,16 @@ module Minitest
       @@reporter_options.fetch(:overview) == :sorted
     end
 
-    def passed_without_skips?
+    def all_run_tests_passed?
       passed_count == test_count
     end
 
-    def run_all_tests?
-      !options_args.include?('--name')
+    def all_tests_were_run?
+      !restricted_run?
+    end
+
+    def restricted_run?
+      options_args =~ /(?:^-n.*)|(?:--name=)|(?:-l\s?\d)|(?:--line(?:\s|=)\d)/
     end
 
     def test_count
@@ -209,7 +213,7 @@ module Minitest
       all_passed_color = MinitestBender.passing_color
       final_divider_color = all_passed_color
 
-      if passed_without_skips? && run_all_tests?
+      if all_run_tests_passed? && all_tests_were_run?
         message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
       else
         messages = MinitestBender.states.values.map do |state|
