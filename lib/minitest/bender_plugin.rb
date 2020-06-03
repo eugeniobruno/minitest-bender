@@ -19,5 +19,9 @@ module Minitest
     opts.on('--bender-no-overview', 'Bender: skip the overview of sorted results.') do
       Bender.enable!({ overview: :none })
     end
+
+    opts.on '--bender-time-ranking-size=SIZE', 'Bender: adjust the time ranking size.' do |s|
+      Bender.enable!({ time_ranking_size: s.to_i })
+    end
   end
 end

@@ -7,7 +7,8 @@ module Minitest
 
     @@reporter_options = {
       recorder: :compact,
-      overview: :sorted
+      overview: :sorted,
+      time_ranking_size: 5
     }
 
     attr_accessor :io, :options
@@ -28,7 +29,7 @@ module Minitest
       @previous_context = nil
       @results = []
       @results_by_context = {}
-      @slowness_podium_is_relevant = false
+      @time_ranking_is_relevant = false
     end
 
     def start
@@ -62,7 +63,7 @@ module Minitest
 
       (results_by_context[current_context] ||= []) << result
 
-      @slowness_podium_is_relevant = true if result.time > 0.01
+      @time_ranking_is_relevant = true if result.time > 0.01
 
       if verbose_recorder?
         print_verbose_result(result)
@@ -97,12 +98,12 @@ module Minitest
         print_sorted_overview
       end
 
-      print_details
-
-      if @slowness_podium_is_relevant && passed?
-        print_slowness_podium
+      if must_print_time_ranking?
+        print_time_ranking
         io.puts
       end
+
+      print_details
 
       print_statistics
       io.puts
@@ -122,6 +123,14 @@ module Minitest
 
     def sorted_overview_enabled?
       @@reporter_options.fetch(:overview) == :sorted
+    end
+
+    def must_print_time_ranking?
+      @time_ranking_is_relevant && time_ranking_size > 0
+    end
+
+    def time_ranking_size
+      @@reporter_options.fetch(:time_ranking_size)
     end
 
     def all_run_tests_passed?
@@ -229,15 +238,16 @@ module Minitest
       print_divider(final_divider_color)
     end
 
-    def print_slowness_podium
+    def print_time_ranking
       results.sort_by! { |r| -r.time }
 
-      io.puts(formatted_label(:grey_700, 'SLOWNESS PODIUM'))
+      io.puts(formatted_label(:grey_700, 'TIME RANKING'))
       io.puts
-      results.take(3).each_with_index do |result, i|
+      results.take(time_ranking_size).each_with_index do |result, i|
         number = "#{i + 1})".ljust(4)
-        io.puts "    #{number}#{result.line_for_slowness_podium}"
+        io.puts "    #{number}#{result.line_for_time_ranking}"
       end
+      print_divider(:white)
     end
 
     def formatted_label(color, label)

@@ -48,7 +48,7 @@ module MinitestBender
         state.class == some_state.class
       end
 
-      def line_for_slowness_podium
+      def line_for_time_ranking
         "#{formatted_time} #{Colorizer.colorize(:white, context)}#{NAME_SEP}#{name}"
       end
 
