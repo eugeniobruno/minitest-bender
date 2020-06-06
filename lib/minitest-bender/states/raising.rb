@@ -10,7 +10,7 @@ module MinitestBender
       ICON = '💥'
 
       def formatted_message(result)
-        @formatted_message ||= colored(detailed_error_message(result))
+        @formatted_message ||= colored(error_message(result))
       end
 
       def summary_message(results)
@@ -42,11 +42,6 @@ module MinitestBender
       def error_message(result)
         exception = result.failures[0].exception
         "#{exception.class}: #{exception.message}"
-      end
-
-      def detailed_error_message(result)
-        details = Utils.relative_path(backtrace(result)[0])
-        "#{error_message(result)}\n    (#{details})"
       end
 
       def backtrace(result)
