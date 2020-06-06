@@ -18,17 +18,31 @@ module MinitestBender
         @execution_order = @state.incr
       end
 
-      def context
-        @context ||=
+      def context_members
+        @context_members ||=
           if minitest_result.respond_to?(:klass) # minitest >= 5.11
             minitest_result.klass
           else
             minitest_result.class.name
-          end.gsub('::', CLASS_SEP)
+          end.split('::')
       end
 
-      def header
-        Colorizer.colorize(:white, "• #{context}").bold
+      def context(i = nil, j = nil)
+        if i && j
+          context_members[i..j].join(CLASS_SEP)
+        else
+          @context ||= context_members.join(CLASS_SEP)
+        end
+      end
+
+      def header(i = 0, j = -1)
+        prefix = '• '
+        if j == -1
+          prefix = CLASS_SEP if i > 0
+          Colorizer.colorize(:white, prefix + context(i, j))
+        else
+          Colorizer.colorize(:white, prefix + context(i, j)).bold
+        end
       end
 
       def to_icon

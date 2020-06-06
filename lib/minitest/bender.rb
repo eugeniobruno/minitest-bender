@@ -176,15 +176,25 @@ module Minitest
     def print_sorted_overview
       io.puts(formatted_label(:white, 'SORTED OVERVIEW'))
       io.puts
+      previous_context = []
       results_by_context.sort.each do |context, results|
         io.puts
-        io.puts(results.first.header)
+        context = results.first.context_members
+        i = first_difference_index(previous_context, context)
+        io.print(results.first.header(0, i - 1)) if i > 0
+        io.puts(results.first.header(i, -1))
         results.sort_by(&:sort_key).each do |result|
           io.puts result.line_to_report
         end
+        previous_context = context
       end
       io.puts
       print_divider(:white)
+    end
+
+    def first_difference_index(a, b)
+      a.each_with_index { |a_elt, i| return i if b[i] != a_elt }
+      a.size
     end
 
     def print_details
