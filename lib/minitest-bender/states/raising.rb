@@ -26,7 +26,7 @@ module MinitestBender
       end
 
       def test_location(result)
-        backtrace_line = backtrace(result).select do |line|
+        backtrace_line = user_backtrace(result).select do |line|
           File.dirname(line) == '.' || line =~ %r{(^|/)(test|spec)/}
         end.last
         if backtrace_line
