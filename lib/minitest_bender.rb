@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colorin'
 
 require 'minitest-bender/version'
@@ -35,5 +37,9 @@ module MinitestBender
 
   def self.passing_color
     states.fetch('.').color
+  end
+
+  def self.backtrace_view=(backtrace_view)
+    states.fetch('E').backtrace_view = backtrace_view
   end
 end

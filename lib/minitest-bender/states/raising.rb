@@ -9,6 +9,12 @@ module MinitestBender
       GROUP_LABEL = 'ERRORS'
       ICON = '💥'
 
+      attr_accessor :backtrace_view
+
+      def initialize
+        @backtrace_view = :user
+      end
+
       def formatted_message(result)
         @formatted_message ||= colored(error_message(result))
       end
@@ -45,6 +51,23 @@ module MinitestBender
       end
 
       def backtrace(result)
+        case backtrace_view
+        when :user
+          user_backtrace(result)
+        when :full
+          full_backtrace(result)
+        else
+          raise "unknown backtrace view: #{backtrace_view}"
+        end
+      end
+
+      def user_backtrace(result)
+        full_backtrace(result).take_while do |line|
+          line !~ %r{minitest/test\.rb}
+        end
+      end
+
+      def full_backtrace(result)
         result.failures[0].backtrace
       end
     end
