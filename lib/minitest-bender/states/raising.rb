@@ -10,7 +10,7 @@ module MinitestBender
       ICON = '💥'
 
       def formatted_message(result)
-        @formatted_message = colored(detailed_error_message(result))
+        colored(detailed_error_message(result))
       end
 
       def summary_message(results)
