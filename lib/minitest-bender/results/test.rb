@@ -6,7 +6,7 @@ module MinitestBender
         @raw_name = raw_name
       end
 
-      def context(*)
+      def context
         super.gsub(/^Test|Test$/, '')
       end
 

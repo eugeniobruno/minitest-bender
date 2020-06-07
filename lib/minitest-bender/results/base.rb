@@ -10,7 +10,8 @@ module MinitestBender
       attr_reader :state, :execution_order
 
       CLASS_SEP = ' ▸ '
-      NAME_SEP =  ' ◆ '
+      NAME_SEP =  ' ♦ '
+      HEADER_PREFIX = '• '
 
       def initialize(minitest_result)
         @minitest_result = minitest_result
@@ -18,31 +19,18 @@ module MinitestBender
         @execution_order = @state.incr
       end
 
-      def context_members
-        @context_members ||=
+      def context
+        @context ||=
           if minitest_result.respond_to?(:klass) # minitest >= 5.11
             minitest_result.klass
           else
             minitest_result.class.name
-          end.split('::')
+          end.split('::').join(CLASS_SEP)
       end
 
-      def context(i = nil, j = nil)
-        if i && j
-          context_members[i..j].join(CLASS_SEP)
-        else
-          @context ||= context_members.join(CLASS_SEP)
-        end
-      end
-
-      def header(i = 0, j = -1)
-        prefix = '• '
-        if j == -1
-          prefix = CLASS_SEP if i > 0
-          Colorizer.colorize(:white, prefix + context(i, j))
-        else
-          Colorizer.colorize(:white, prefix + context(i, j)).bold
-        end
+      def header(msg = nil)
+        msg ||= Colorizer.colorize(:white, context).bold
+        Colorizer.colorize(:white, HEADER_PREFIX).bold + msg
       end
 
       def to_icon

@@ -190,27 +190,36 @@ module Minitest
     end
 
     def print_header(result, previous_context)
-      context = result.context_members
-      i = first_difference_index(previous_context, context)
-      io.print(result.header(0, i - 1)) if i > 0
-      io.puts(result.header(i, -1))
+      class_sep = MinitestBender::Results::Base::CLASS_SEP
+      context = result.context.split(class_sep)
+      old, new = split_old_new(previous_context, context, class_sep)
+      old = Colorizer.colorize(:white, old)
+      new = Colorizer.colorize(:white, new).bold
+      io.puts(result.header("#{old}#{new}"))
       context
     end
 
     def print_result_line(result, previous_words)
       prefix, message = result.content_to_report
       words = message.split(' ')
-      i = first_difference_index(previous_words, words)
-      old = words[0...i].join(' ')
-      new = words[i..-1].join(' ')
-      new = " #{new}" unless old.empty?
-      io.puts("#{prefix} " + Colorizer.colorize(:white, old).bold + Colorizer.colorize(:white, new))
+      old, new = split_old_new(previous_words, words, ' ')
+      old = Colorizer.colorize(:white, old)
+      new = Colorizer.colorize(:white, new).bold
+      io.puts("#{prefix} #{old}#{new}")
       words
     end
 
-    def first_difference_index(base, other)
-      base.each_with_index { |elt, i| return i if other[i] != elt }
-      base.size
+    def split_old_new(old, new, sep)
+      _, i = new.each_with_index.find { |elt, i| old[i] != elt }
+      old, new = if i
+                   [old[0...i], new[i..-1]]
+                 else
+                   [[], new]
+                 end
+      old = old.join(sep)
+      new.unshift '' unless old.empty?
+      new = new.join(sep)
+      [old, new]
     end
 
     def print_details
