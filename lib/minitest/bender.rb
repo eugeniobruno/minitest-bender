@@ -180,8 +180,9 @@ module Minitest
       results_by_context.sort.each do |context, results|
         io.puts
         previous_context = print_header(results.first, previous_context)
+        previous_message = ''
         results.sort_by(&:sort_key).each do |result|
-          io.puts result.line_to_report
+          previous_message = print_result_line(result, previous_message)
         end
       end
       io.puts
@@ -194,6 +195,14 @@ module Minitest
       io.print(result.header(0, i - 1)) if i > 0
       io.puts(result.header(i, -1))
       context
+    end
+
+    def print_result_line(result, previous_message)
+      prefix, message = result.content_to_report
+      i = first_difference_index(previous_message.each_char.with_index, message)
+      io.print("#{prefix} " + Colorizer.colorize(:white, message[0...i]).bold)
+      io.puts(Colorizer.colorize(:white, message[i..-1] || ''))
+      message
     end
 
     def first_difference_index(enum, other)
