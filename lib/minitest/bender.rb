@@ -180,9 +180,9 @@ module Minitest
       results_by_context.sort.each do |context, results|
         io.puts
         previous_context = print_header(results.first, previous_context)
-        previous_message = ''
+        previous_words = []
         results.sort_by(&:sort_key).each do |result|
-          previous_message = print_result_line(result, previous_message)
+          previous_words = print_result_line(result, previous_words)
         end
       end
       io.puts
@@ -191,23 +191,26 @@ module Minitest
 
     def print_header(result, previous_context)
       context = result.context_members
-      i = first_difference_index(previous_context.each_with_index, context)
+      i = first_difference_index(previous_context, context)
       io.print(result.header(0, i - 1)) if i > 0
       io.puts(result.header(i, -1))
       context
     end
 
-    def print_result_line(result, previous_message)
+    def print_result_line(result, previous_words)
       prefix, message = result.content_to_report
-      i = first_difference_index(previous_message.each_char.with_index, message)
-      io.print("#{prefix} " + Colorizer.colorize(:white, message[0...i]).bold)
-      io.puts(Colorizer.colorize(:white, message[i..-1] || ''))
-      message
+      words = message.split(' ')
+      i = first_difference_index(previous_words, words)
+      old = words[0...i].join(' ')
+      new = words[i..-1].join(' ')
+      new = " #{new}" unless old.empty?
+      io.puts("#{prefix} " + Colorizer.colorize(:white, old).bold + Colorizer.colorize(:white, new))
+      words
     end
 
-    def first_difference_index(enum, other)
-      enum.each { |elt, i| return i if other[i] != elt }
-      enum.size
+    def first_difference_index(base, other)
+      base.each_with_index { |elt, i| return i if other[i] != elt }
+      base.size
     end
 
     def print_details
