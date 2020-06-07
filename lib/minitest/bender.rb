@@ -176,10 +176,10 @@ module Minitest
     def print_sorted_overview
       io.puts(formatted_label(:white, 'SORTED OVERVIEW'))
       io.puts
-      previous_context = []
+      previous_split_context = []
       results_by_context.sort.each do |context, results|
         io.puts
-        previous_context = print_header(results.first, previous_context)
+        previous_split_context = print_header(results.first, previous_split_context)
         previous_words = []
         results.sort_by(&:sort_key).each do |result|
           previous_words = print_result_line(result, previous_words)
@@ -189,14 +189,14 @@ module Minitest
       print_divider(:white)
     end
 
-    def print_header(result, previous_context)
-      class_sep = MinitestBender::Results::Base::CLASS_SEP
-      context = result.context.split(class_sep)
-      old, new = split_old_new(previous_context, context, class_sep)
+    def print_header(result, previous_split_context)
+      context_separator = result.context_separator
+      split_context = result.context.split(context_separator)
+      old, new = split_old_new(previous_split_context, split_context, context_separator)
       old = Colorizer.colorize(:white, old)
       new = Colorizer.colorize(:white, new).bold
       io.puts(result.header("#{old}#{new}"))
-      context
+      split_context
     end
 
     def print_result_line(result, previous_words)

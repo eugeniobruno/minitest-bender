@@ -9,8 +9,9 @@ module MinitestBender
       def_delegators :@minitest_result, :passed?, :skipped?, :assertions, :failures, :time
       attr_reader :state, :execution_order
 
-      CLASS_SEP = ' ▸ '
-      NAME_SEP =  ' ♦ '
+      CLASS_SEPARATOR = '::'
+      CONTEXT_SEPARATOR = ' ▸ '
+      NAME_PREFIX = '♦ '
       HEADER_PREFIX = '• '
 
       def initialize(minitest_result)
@@ -20,12 +21,11 @@ module MinitestBender
       end
 
       def context
-        @context ||=
-          if minitest_result.respond_to?(:klass) # minitest >= 5.11
-            minitest_result.klass
-          else
-            minitest_result.class.name
-          end.split('::').join(CLASS_SEP)
+        @context ||= class_name.split(class_separator).join(context_separator)
+      end
+
+      def context_separator
+        CONTEXT_SEPARATOR
       end
 
       def header(msg = nil)
@@ -38,7 +38,7 @@ module MinitestBender
       end
 
       def details_header(number)
-        "    #{number}#{Colorizer.colorize(:white, context)}#{NAME_SEP}#{name}"
+        "    #{number}#{formatted_name_with_context}"
       end
 
       def rerun_line(padding)
@@ -51,12 +51,32 @@ module MinitestBender
       end
 
       def line_for_time_ranking
-        "#{formatted_time} #{Colorizer.colorize(:white, context)}#{NAME_SEP}#{name}"
+        "#{formatted_time} #{formatted_name_with_context}"
       end
 
       private
 
       attr_reader :minitest_result
+
+      def class_name
+        if minitest_result.respond_to?(:klass) # minitest >= 5.11
+          minitest_result.klass
+        else
+          minitest_result.class.name
+        end
+      end
+
+      def class_separator
+        CLASS_SEPARATOR
+      end
+
+      def name_prefix
+        NAME_PREFIX
+      end
+
+      def formatted_name_with_context
+        "#{Colorizer.colorize(:white, context)} #{name_prefix}#{name}"
+      end
 
       def formatted_label
         "    #{state.formatted_label}"
