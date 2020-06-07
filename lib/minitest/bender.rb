@@ -176,13 +176,13 @@ module Minitest
     def print_sorted_overview
       io.puts(formatted_label(:white, 'SORTED OVERVIEW'))
       io.puts
-      previous_split_context = []
+      split_context = []
       results_by_context.sort.each do |context, results|
         io.puts
-        previous_split_context = print_header(results.first, previous_split_context)
-        previous_words = []
+        split_context = print_header(results.first, split_context)
+        words = []
         results.sort_by(&:sort_key).each do |result|
-          previous_words = print_result_line(result, previous_words)
+          words = print_result_line(result, words)
         end
       end
       io.puts
@@ -190,36 +190,50 @@ module Minitest
     end
 
     def print_header(result, previous_split_context)
-      context_separator = result.context_separator
-      split_context = result.context.split(context_separator)
-      old, new = split_old_new(previous_split_context, split_context, context_separator)
-      old = Colorizer.colorize(:white, old)
-      new = Colorizer.colorize(:white, new).bold
-      io.puts(result.header("#{old}#{new}"))
+      separator = result.context_separator
+      split_context = result.context.split(separator)
+
+      formatted_context = formatted_old_and_new(previous_split_context, split_context, separator)
+
+      io.puts(result.header(formatted_context))
       split_context
     end
 
     def print_result_line(result, previous_words)
       prefix, message = result.content_to_report
+
       words = message.split(' ')
-      old, new = split_old_new(previous_words, words, ' ')
-      old = Colorizer.colorize(:white, old)
-      new = Colorizer.colorize(:white, new).bold
-      io.puts("#{prefix} #{old}#{new}")
+
+      formatted_words = formatted_old_and_new(previous_words, words, ' ')
+
+      io.puts("#{prefix} #{formatted_words}")
       words
     end
 
-    def split_old_new(old, new, sep)
-      _, i = new.each_with_index.find { |elt, i| old[i] != elt }
-      old, new = if i
-                   [old[0...i], new[i..-1]]
-                 else
-                   [[], new]
-                 end
-      old = old.join(sep)
-      new.unshift '' unless old.empty?
-      new = new.join(sep)
-      [old, new]
+    def formatted_old_and_new(previous, current, separator)
+      old_part, new_part = old_and_new(previous, current)
+
+      old_part_string = old_part.join(separator)
+      old_part_string << separator unless old_part_string.empty?
+      new_part_string = new_part.join(separator)
+
+      formatted_old = Colorizer.colorize(:white, old_part_string)
+      formatted_new = Colorizer.colorize(:white, new_part_string).bold
+
+      "#{formatted_old}#{formatted_new}"
+    end
+
+    def old_and_new(previous, current)
+      cut_index = first_difference_index(previous, current) || previous.size
+      cut_at(current, cut_index)
+    end
+
+    def first_difference_index(xs, ys)
+      xs.find_index.with_index { |x, i| x != ys[i] }
+    end
+
+    def cut_at(xs, i)
+      [xs.take(i), xs.drop(i)]
     end
 
     def print_details
