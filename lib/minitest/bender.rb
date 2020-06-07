@@ -179,22 +179,26 @@ module Minitest
       previous_context = []
       results_by_context.sort.each do |context, results|
         io.puts
-        context = results.first.context_members
-        i = first_difference_index(previous_context, context)
-        io.print(results.first.header(0, i - 1)) if i > 0
-        io.puts(results.first.header(i, -1))
+        previous_context = print_header(results.first, previous_context)
         results.sort_by(&:sort_key).each do |result|
           io.puts result.line_to_report
         end
-        previous_context = context
       end
       io.puts
       print_divider(:white)
     end
 
-    def first_difference_index(a, b)
-      a.each_with_index { |a_elt, i| return i if b[i] != a_elt }
-      a.size
+    def print_header(result, previous_context)
+      context = result.context_members
+      i = first_difference_index(previous_context.each_with_index, context)
+      io.print(result.header(0, i - 1)) if i > 0
+      io.puts(result.header(i, -1))
+      context
+    end
+
+    def first_difference_index(enum, other)
+      enum.each { |elt, i| return i if other[i] != elt }
+      enum.size
     end
 
     def print_details
