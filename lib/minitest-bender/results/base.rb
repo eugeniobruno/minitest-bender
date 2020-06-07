@@ -83,7 +83,9 @@ module MinitestBender
       end
 
       def rerun_command
-        relative_location = state.test_location(self).split(':').first
+        return unless (relative_location = state.test_location(self))
+
+        relative_location = relative_location.split(':').first
         "rake TEST=#{relative_location} TESTOPTS=\"--name=#{name_for_rerun_command}\""
       end
     end

@@ -50,7 +50,8 @@ module MinitestBender
       end
 
       def backtrace(result)
-        result.failures[0].backtrace
+        # Minitest::UnexpectedError: SystemStackError: stack level too deep
+        result.failures[0].backtrace || ['']
       end
     end
   end
