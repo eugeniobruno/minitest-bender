@@ -37,6 +37,10 @@ module MinitestBender
         state.colored_icon
       end
 
+      def line_to_report
+        content_to_report.join(' ')
+      end
+
       def details_header(number)
         "    #{number}#{formatted_name_with_context}"
       end

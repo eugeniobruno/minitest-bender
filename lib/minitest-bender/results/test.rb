@@ -14,10 +14,6 @@ module MinitestBender
         ["#{formatted_label}#{formatted_time}", "#{name} #{formatted_message}"]
       end
 
-      def line_to_report
-        "#{formatted_label}#{formatted_time} #{name} #{formatted_message}"
-      end
-
       def sort_key
         raw_name
       end

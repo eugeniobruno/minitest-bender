@@ -11,10 +11,6 @@ module MinitestBender
         ["#{formatted_label}#{formatted_time} #{formatted_number}", "#{name} #{formatted_message}"]
       end
 
-      def line_to_report
-        "#{formatted_label}#{formatted_time} #{formatted_number} #{name} #{formatted_message}"
-      end
-
       def sort_key
         @sort_key ||= number.to_i
       end
