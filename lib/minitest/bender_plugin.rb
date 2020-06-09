@@ -23,5 +23,9 @@ module Minitest
     opts.on '--bender-time-ranking-size=SIZE', 'Bender: adjust the time ranking size.' do |s|
       Bender.enable!({ time_ranking_size: s.to_i })
     end
+
+    opts.on('--bender-backtrace-view=BV', 'Bender: choose the backtrace view for test errors. (user | full)') do |b|
+      Bender.enable!({ backtrace_view: b.to_sym })
+    end
   end
 end
