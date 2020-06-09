@@ -8,7 +8,8 @@ module Minitest
     @@reporter_options = {
       recorder: :compact,
       overview: :sorted,
-      time_ranking_size: 5
+      time_ranking_size: 5,
+      backtrace_view: :user
     }
 
     attr_accessor :io, :options
@@ -30,6 +31,7 @@ module Minitest
       @results = []
       @results_by_context = {}
       @time_ranking_is_relevant = false
+      MinitestBender.backtrace_view = @@reporter_options.fetch(:backtrace_view).to_sym
     end
 
     def start
