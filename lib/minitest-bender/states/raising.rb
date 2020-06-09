@@ -16,7 +16,7 @@ module MinitestBender
       end
 
       def formatted_message(result)
-        @formatted_message ||= colored(error_message(result))
+        colored(error_message(result))
       end
 
       def summary_message(results)

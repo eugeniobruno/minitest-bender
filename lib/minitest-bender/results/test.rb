@@ -10,8 +10,8 @@ module MinitestBender
         super.gsub(/^Test|Test$/, '')
       end
 
-      def line_to_report
-        "#{formatted_label}#{formatted_time} #{name} #{formatted_message}"
+      def content_to_report
+        ["#{formatted_label}#{formatted_time}", "#{name} #{formatted_message}"]
       end
 
       def sort_key
