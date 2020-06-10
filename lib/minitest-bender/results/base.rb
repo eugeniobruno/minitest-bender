@@ -58,6 +58,10 @@ module MinitestBender
         "#{formatted_time} #{formatted_name_with_context}"
       end
 
+      def file_path
+        source_location[0]
+      end
+
       private
 
       attr_reader :minitest_result
@@ -67,6 +71,15 @@ module MinitestBender
           minitest_result.klass
         else
           minitest_result.class.name
+        end
+      end
+
+      # credit where credit is due: minitest-line
+      def source_location
+        if minitest_result.respond_to?(:source_location) # minitest >= 5.11
+          minitest_result.source_location
+        else
+          minitest_result.method(minitest_result.name).source_location
         end
       end
 

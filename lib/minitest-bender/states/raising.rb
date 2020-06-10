@@ -26,14 +26,7 @@ module MinitestBender
       end
 
       def test_location(result)
-        backtrace_line = user_backtrace(result).select do |line|
-          File.dirname(line) == '.' || line =~ %r{(^|/)(test|spec)/}
-        end.last
-        if backtrace_line
-          Utils.relative_path(backtrace_line).split(':').first
-        else
-          "(test location can't be deduced from backtrace)"
-        end
+        Utils.relative_path(result.file_path)
       end
 
       private
@@ -68,8 +61,7 @@ module MinitestBender
       end
 
       def full_backtrace(result)
-        # Minitest::UnexpectedError: SystemStackError: stack level too deep
-        result.failures[0].backtrace || ['']
+        result.failures[0].backtrace || []
       end
     end
   end
