@@ -16,6 +16,10 @@ module Minitest
       Bender.enable!({ recorder: r.to_sym })
     end
 
+    opts.on('--bender-overview', 'Bender: show the overview of sorted results.') do
+      Bender.enable!({ overview: :sorted })
+    end
+
     opts.on('--bender-no-overview', 'Bender: skip the overview of sorted results.') do
       Bender.enable!({ overview: :none })
     end
