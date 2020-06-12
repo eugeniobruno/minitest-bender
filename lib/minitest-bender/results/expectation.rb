@@ -24,7 +24,7 @@ module MinitestBender
       end
 
       def name_for_rerun_command
-        "/#{name.gsub(' ', '\\ ')}$/"
+        "/#{name.gsub(/[^a-zA-Z0-9_\-{}#@]/, '.')}$/"
       end
     end
   end
