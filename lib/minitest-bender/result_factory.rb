@@ -26,6 +26,11 @@ module MinitestBender
     end
 
     def parsed_name(minitest_result)
+      if minitest_result.name.is_a?(Class)
+        # something went wrong inside minitest (infinite loop?)
+        raise minitest_result.failures[0].error
+      end
+
       minitest_result.name.match(RESULT_NAME_REGEXP)
     end
   end
