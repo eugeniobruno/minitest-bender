@@ -245,7 +245,7 @@ module Minitest
     end
 
     def print_verbose_result(result)
-      io.puts result.line_to_report
+      io.puts result.line_for_verbose_recorder
       result.state.print_detail(io, result) unless result.passed?
     end
 

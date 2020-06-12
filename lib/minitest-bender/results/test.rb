@@ -14,6 +14,10 @@ module MinitestBender
         ["#{formatted_label}#{formatted_time}", "#{name} #{formatted_message}"]
       end
 
+      def line_for_verbose_recorder
+        "#{formatted_label}#{formatted_time}" "#{name}"
+      end
+
       def sort_key
         raw_name
       end
