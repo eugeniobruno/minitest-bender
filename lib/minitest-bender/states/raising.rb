@@ -32,7 +32,8 @@ module MinitestBender
       private
 
       def do_print_details(io, result, padding)
-        io.puts "#{padding}#{colored(error_message(result))}"
+        message = colored(error_message(result))
+        io.puts "#{padding}#{message.gsub("\n", "\n#{padding}")}"
         backtrace(result).each do |line|
           io.puts "#{padding}#{Colorizer.colorize(:brown_400, line)}"
         end
