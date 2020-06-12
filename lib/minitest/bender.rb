@@ -70,7 +70,7 @@ module Minitest
       if verbose_recorder?
         print_verbose_result(result)
       else
-        io.print result.to_icon
+        print_compact_result(result)
       end
       io.flush
     end
@@ -247,6 +247,10 @@ module Minitest
     def print_verbose_result(result)
       io.puts result.line_for_verbose_recorder
       result.state.print_detail(io, result) unless result.passed?
+    end
+
+    def print_compact_result(result)
+      io.print result.to_icon
     end
 
     def print_statistics
