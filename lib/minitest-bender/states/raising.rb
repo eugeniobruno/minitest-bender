@@ -40,8 +40,8 @@ module MinitestBender
       end
 
       def error_message(result)
-        exception = result.failures[0].exception
-        "#{exception.class}: #{exception.message}"
+        error = result.failures[0].error
+        "#{error.class}: #{error.message}"
       end
 
       def backtrace(result)
