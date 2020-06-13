@@ -4,7 +4,7 @@
 module MinitestBender
   module States
     class Failing < Base
-      COLOR = :red_500
+      COLOR = :fail
       LABEL = 'FAILED'
       GROUP_LABEL = 'FAILURES'
       ICON = '✖'

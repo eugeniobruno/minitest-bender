@@ -4,7 +4,7 @@
 module MinitestBender
   module States
     class Passing < Base
-      COLOR = :green_500
+      COLOR = :pass
       LABEL = 'PASSED'
       GROUP_LABEL = 'PASSING'
       ICON = '✔'

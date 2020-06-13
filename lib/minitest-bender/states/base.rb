@@ -6,7 +6,7 @@ module MinitestBender
       end
 
       def formatted_group_label
-        @formatted_group_label ||= "  #{colored(group_label).bold.underline}"
+        @formatted_group_label ||= "  #{colored(group_label, :bold, :underline)}"
       end
 
       def colored_icon
@@ -63,8 +63,8 @@ module MinitestBender
         self.class::ICON
       end
 
-      def colored(string)
-        Colorizer.colorize(color, string)
+      def colored(string, *args)
+        Colorizer.colorize(string, color, *args)
       end
 
       def only_with_this_state(results)
@@ -75,7 +75,7 @@ module MinitestBender
         result.failures[0].message.split("\n").each do |line|
           io.puts "#{padding}#{colored(line)}"
         end
-        io.puts "#{padding}#{Colorizer.colorize(:brown_400, location(result))}:"
+        io.puts "#{padding}#{Colorizer.colorize(location(result), :backtrace)}:"
       end
 
       def location(result)

@@ -37,8 +37,8 @@ module Minitest
     def start
       @started_at = Time.now
       io.puts
-      io.puts Colorizer.colorize(:white, "Minitest started at #{started_at}")
-      io.puts Colorizer.colorize(:white, "Options: #{options_args}")
+      io.puts Colorizer.colorize("Minitest started at #{started_at}", :normal)
+      io.puts Colorizer.colorize("Options: #{options_args}", :normal)
       io.puts
       io.flush
     end
@@ -94,7 +94,7 @@ module Minitest
 
       io.puts
       io.puts
-      print_divider(:white)
+      print_divider(:normal)
 
       if sorted_overview_enabled? && results.size > 1
         print_sorted_overview
@@ -164,19 +164,19 @@ module Minitest
     end
 
     def print_divider(color, line_length = 23)
-      io.puts(Colorizer.colorize(color, "  #{'_' * line_length}").bold)
+      io.puts(Colorizer.colorize("  #{'_' * line_length}", color, :bold))
       io.puts
     end
 
     def print_no_tests_status
       message = 'NO TESTS WERE RUN!  (-_-)zzz'
       padded_message = "  #{message}"
-      io.puts(Colorizer.colorize(:blue_a700, padded_message))
-      print_divider(:blue_a700, message.length)
+      io.puts(Colorizer.colorize(padded_message, :tests))
+      print_divider(:tests, message.length)
     end
 
     def print_sorted_overview
-      io.puts(formatted_label(:white, 'SORTED OVERVIEW'))
+      io.puts(formatted_label('SORTED OVERVIEW', :normal))
       io.puts
       split_context = []
       results_by_context.sort.each do |context, results|
@@ -188,7 +188,7 @@ module Minitest
         end
       end
       io.puts
-      print_divider(:white)
+      print_divider(:normal)
     end
 
     def print_header(result, previous_split_context)
@@ -219,8 +219,8 @@ module Minitest
       old_part_string << separator unless old_part_string.empty?
       new_part_string = new_part.join(separator)
 
-      formatted_old = Colorizer.colorize(:white, old_part_string)
-      formatted_new = Colorizer.colorize(:white, new_part_string).bold
+      formatted_old = Colorizer.colorize(old_part_string, :normal)
+      formatted_new = Colorizer.colorize(new_part_string, :normal, :bold)
 
       "#{formatted_old}#{formatted_new}"
     end
@@ -256,29 +256,29 @@ module Minitest
     def print_statistics
       total_tests = "#{test_count} tests"
       total_tests = total_tests.chop if test_count == 1
-      formatted_total_tests = Colorizer.colorize(:blue_a700, total_tests)
+      formatted_total_tests = Colorizer.colorize(total_tests, :tests)
 
       total_assertions = "#{assertion_count} assertions"
       total_assertions = total_assertions.chop if assertion_count == 1
-      formatted_total_assertions = Colorizer.colorize(:purple_400, total_assertions)
+      formatted_total_assertions = Colorizer.colorize(total_assertions, :assertions)
 
       auxiliary_verb = test_count == 1 ? 'was' : 'were'
 
       total_time = (Time.now - started_at).round(3)
-      formatted_total_time = Colorizer.colorize(:grey_700, "#{total_time} seconds")
+      formatted_total_time = Colorizer.colorize("#{total_time} seconds", :time)
 
-      tests_rate = Colorizer.colorize(:grey_700, "#{(test_count / total_time).round(4)} tests/s")
-      assertions_rate = Colorizer.colorize(:grey_700, "#{(assertion_count / total_time).round(4)} assertions/s")
+      tests_rate = Colorizer.colorize("#{(test_count / total_time).round(4)} tests/s", :time)
+      assertions_rate = Colorizer.colorize("#{(assertion_count / total_time).round(4)} assertions/s", :time)
 
       io.puts "  #{formatted_total_tests} with #{formatted_total_assertions} #{auxiliary_verb} run in #{formatted_total_time} (#{tests_rate}, #{assertions_rate})"
     end
 
     def print_suite_status
-      all_passed_color = MinitestBender.passing_color
+      all_passed_color = :pass
       final_divider_color = all_passed_color
 
       if all_run_tests_passed? && all_tests_were_run?
-        message = Colorizer.colorize(all_passed_color, '  ALL TESTS PASS!  (^_^)/')
+        message = Colorizer.colorize('  ALL TESTS PASS!  (^_^)/', all_passed_color)
       else
         messages = MinitestBender.states.values.map do |state|
           summary_message = state.summary_message(results)
@@ -296,17 +296,17 @@ module Minitest
     def print_time_ranking
       results.sort_by! { |r| -r.time }
 
-      io.puts(formatted_label(:grey_700, 'TIME RANKING'))
+      io.puts(formatted_label('TIME RANKING', :time))
       io.puts
       results.take(time_ranking_size).each_with_index do |result, i|
         number = "#{i + 1})".ljust(4)
         io.puts "    #{number}#{result.line_for_time_ranking}"
       end
-      print_divider(:white)
+      print_divider(:normal)
     end
 
-    def formatted_label(color, label)
-      "  #{Colorizer.colorize(color, label).bold.underline}"
+    def formatted_label(label, color)
+      "  #{Colorizer.colorize(label, color, :bold, :underline)}"
     end
   end
 

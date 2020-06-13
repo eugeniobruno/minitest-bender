@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'colorin'
-
 require 'minitest-bender/version'
 
 require 'minitest-bender/colorizer'

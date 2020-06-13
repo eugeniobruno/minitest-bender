@@ -29,8 +29,8 @@ module MinitestBender
       end
 
       def header(msg = nil)
-        msg ||= Colorizer.colorize(:white, context).bold
-        Colorizer.colorize(:white, HEADER_PREFIX).bold + msg
+        msg ||= Colorizer.colorize(context, :normal, :bold)
+        Colorizer.colorize(HEADER_PREFIX, :normal, :bold) + msg
       end
 
       def to_icon
@@ -43,7 +43,7 @@ module MinitestBender
 
       def rerun_line(padding)
         unformatted = "Rerun: #{rerun_command}"
-        "#{padding}#{Colorizer.colorize(:blue_a700, unformatted)}"
+        "#{padding}#{Colorizer.colorize(unformatted, :tests)}"
       end
 
       def state?(some_state)
@@ -88,7 +88,7 @@ module MinitestBender
       end
 
       def formatted_name_with_context
-        "#{Colorizer.colorize(:white, context)} #{name_prefix}#{name}"
+        "#{Colorizer.colorize(context, :normal)} #{name_prefix}#{name}"
       end
 
       def formatted_label
@@ -114,7 +114,7 @@ module MinitestBender
           else
             sprintf('%.0fs', time_in_s)
           end
-        Colorizer.colorize(:grey_700, time_with_unit.rjust(6))
+        Colorizer.colorize(time_with_unit.rjust(6), :time)
       end
 
       def rerun_command

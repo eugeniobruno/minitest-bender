@@ -1,38 +1,41 @@
-require 'rbconfig'
+# frozen_string_literal: true
+
+ENV['ANSICON'] ||= 'Y' if ENV['ConEmuANSI'] != 'ON'
+require 'paint'
 
 module MinitestBender
   class Colorizer
-    FALLBACK_COLORS = {
-      red_500: :red,
-      green_500: :green,
-      amber_300: :yellow,
-      blue_a700: :blue,
-      purple_400: :magenta,
-      cyan_300: :cyan
-    }.freeze
+    COLORS = {              # Xterm No. - Xterm Name
+      pass:       '87ff87', # 120       - LightGreen
+      fail:       'ff5f5f', # 203       - IndianRed1
+      error:      'ffd75f', # 221       - LightGoldenrod2
+      skip:       '5fd7ff', # 81        - SteelBlue1
+      tests:      '5fd7ff', # 81        - SteelBlue1
+      assertions: 'd75fd7', # 170       - Orchid
+      time:       '878787', # 102       - Grey53
+      number:     'af8787', # 138       - RosyBrown
+      backtrace:  'af8787'  # 138       - RosyBrown
+    }
+
+    # In compatibility modes, colors that are mapped to black are avoided.
+    SAFE_COLORS = {
+      pass:       '00ff5f', # 47        - SpringGreen2
+      time:       'gray',
+      number:     'gray',
+      backtrace:  'gray'
+    }
+    COLORS.merge!(SAFE_COLORS) if Paint.mode < 256
+
+    COLORS.freeze
 
     class << self
-      def colorize(color, string)
-        if fallback?
-          fallback_color = FALLBACK_COLORS[color]
-          if fallback_color.nil?
-            Colorin.new(string)
-          else
-            Colorin.public_send(fallback_color, string)
-          end
+      def colorize(string, color, *args)
+        if color == :normal
+          Paint[string, *args]
         else
-          Colorin.public_send(color, string)
+          color_value = COLORS.fetch(color)
+          Paint[string, color_value, *args]
         end
-      end
-
-      private
-
-      def fallback?
-        windows?
-      end
-
-      def windows?
-        @windows ||= RbConfig::CONFIG['host_os'] =~ /mswin|mingw32/
       end
     end
   end
