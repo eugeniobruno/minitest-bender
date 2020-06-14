@@ -21,16 +21,27 @@ module MinitestBender
       end
 
       def context
-        @context ||= class_name.split(class_separator).join(context_separator)
+        @context ||= context_path.join(context_separator)
       end
 
       def context_separator
         CONTEXT_SEPARATOR
       end
 
-      def header(msg = nil)
-        msg ||= Colorizer.colorize(context, :normal, :bold)
-        Colorizer.colorize(HEADER_PREFIX, :normal, :bold) + msg
+      def header_for_compact_recorder
+        path = context_path[0...-1].join(context_separator)
+        path << context_separator unless path.empty?
+        klass = context_path.last
+
+        "#{formatted_header_prefix}#{path}#{Colorizer.colorize(klass, :normal, :bold)}"
+      end
+
+      def header_for_verbose_recorder
+        Colorizer.colorize(header_prefix + context, :normal, :bold)
+      end
+
+      def header_for_sorted_overview(formatted_context)
+        formatted_header_prefix + formatted_context
       end
 
       def to_icon
@@ -62,6 +73,10 @@ module MinitestBender
 
       attr_reader :minitest_result
 
+      def context_path
+        class_name.split(class_separator)
+      end
+
       def class_name
         if minitest_result.respond_to?(:klass) # minitest >= 5.11
           minitest_result.klass
@@ -85,6 +100,14 @@ module MinitestBender
 
       def name_prefix
         NAME_PREFIX
+      end
+
+      def header_prefix
+        HEADER_PREFIX
+      end
+
+      def formatted_header_prefix
+        Colorizer.colorize(header_prefix, :normal, :bold)
       end
 
       def formatted_name_with_context

@@ -55,9 +55,9 @@ module Minitest
         io.puts
 
         if verbose_recorder?
-          io.puts(result.header)
+          io.puts(result.header_for_verbose_recorder)
         else
-          io.print("#{result.header} ")
+          io.print("#{result.header_for_compact_recorder} ")
         end
 
         @previous_context = current_context
@@ -197,7 +197,7 @@ module Minitest
 
       formatted_context = formatted_old_and_new(previous_split_context, split_context, separator)
 
-      io.puts(result.header(formatted_context))
+      io.puts(result.header_for_sorted_overview(formatted_context))
       split_context
     end
 
