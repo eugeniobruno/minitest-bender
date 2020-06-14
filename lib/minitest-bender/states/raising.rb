@@ -12,6 +12,7 @@ module MinitestBender
       attr_accessor :backtrace_view
 
       def initialize
+        super
         @backtrace_view = :user
       end
 
@@ -19,10 +20,9 @@ module MinitestBender
         colored(error_message(result))
       end
 
-      def summary_message(results)
-        filtered_results = only_with_this_state(results)
-        return '' if filtered_results.empty?
-        colored("#{filtered_results.size} raised an error")
+      def summary_message
+        return '' if results.empty?
+        colored("#{results.size} raised an error")
       end
 
       def test_location(result)

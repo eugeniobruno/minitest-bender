@@ -17,7 +17,7 @@ module MinitestBender
       def initialize(minitest_result)
         @minitest_result = minitest_result
         @state = MinitestBender.states.fetch(minitest_result.result_code)
-        @execution_order = @state.incr
+        @execution_order = state.add_result(self).size
       end
 
       def context
@@ -57,16 +57,21 @@ module MinitestBender
         "#{padding}#{Colorizer.colorize(unformatted, :tests)}"
       end
 
-      def state?(some_state)
-        state.class == some_state.class
-      end
-
       def line_for_time_ranking
         "#{formatted_time} #{formatted_name_with_context}"
       end
 
       def file_path
         source_location[0]
+      end
+
+      # credit where credit is due: minitest-line
+      def source_location
+        if minitest_result.respond_to?(:source_location) # minitest >= 5.11
+          minitest_result.source_location
+        else
+          minitest_result.method(minitest_result.name).source_location
+        end
       end
 
       private
@@ -82,15 +87,6 @@ module MinitestBender
           minitest_result.klass
         else
           minitest_result.class.name
-        end
-      end
-
-      # credit where credit is due: minitest-line
-      def source_location
-        if minitest_result.respond_to?(:source_location) # minitest >= 5.11
-          minitest_result.source_location
-        else
-          minitest_result.method(minitest_result.name).source_location
         end
       end
 

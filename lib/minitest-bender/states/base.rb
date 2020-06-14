@@ -1,6 +1,16 @@
 module MinitestBender
   module States
     class Base
+      attr_reader :results
+
+      def initialize
+        @results = []
+      end
+
+      def add_result(result)
+        results.push(result)
+      end
+
       def formatted_label
         @formatted_label ||= colored(label.ljust(7))
       end
@@ -13,15 +23,16 @@ module MinitestBender
         colored(icon)
       end
 
-      def print_details(io, results)
-        filtered_results = only_with_this_state(results)
-        return :no_details if filtered_results.empty?
+      def print_details(io)
+        return :no_details if results.empty?
+
+        sorted_results = results.sort_by(&:source_location)
 
         io.puts formatted_group_label
         io.puts
-        filtered_results.each_with_index do |result, i|
+        sorted_results.each_with_index do |result, i|
           print_detail(io, result)
-          io.puts if i < filtered_results.size - 1
+          io.puts if i < results.size - 1
         end
         io.puts
         :printed_details
@@ -44,11 +55,6 @@ module MinitestBender
         location(result)
       end
 
-      def incr
-        @i ||= 0
-        @i += 1
-      end
-
       private
 
       def label
@@ -65,10 +71,6 @@ module MinitestBender
 
       def colored(string, *args)
         Colorizer.colorize(string, color, *args)
-      end
-
-      def only_with_this_state(results)
-        results.select { |result| result.state?(self) }
       end
 
       def do_print_details(io, result, padding)

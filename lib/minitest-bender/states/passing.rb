@@ -13,14 +13,13 @@ module MinitestBender
         ''
       end
 
-      def print_details(_io, _results)
+      def print_details(_io)
         :no_details
       end
 
-      def summary_message(results)
-        filtered_results = only_with_this_state(results)
-        return '' if filtered_results.empty?
-        colored("#{filtered_results.size} passed")
+      def summary_message
+        return '' if results.empty?
+        colored("#{results.size} passed")
       end
     end
   end

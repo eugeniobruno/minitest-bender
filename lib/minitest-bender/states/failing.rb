@@ -13,10 +13,9 @@ module MinitestBender
         colored(location(result))
       end
 
-      def summary_message(results)
-        filtered_results = only_with_this_state(results)
-        return '' if filtered_results.empty?
-        colored("#{filtered_results.size} failed")
+      def summary_message
+        return '' if results.empty?
+        colored("#{results.size} failed")
       end
     end
   end

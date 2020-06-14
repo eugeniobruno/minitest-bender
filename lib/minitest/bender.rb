@@ -240,7 +240,7 @@ module Minitest
 
     def print_details
       states = MinitestBender.states.values
-      symbols = states.map { |state| state.print_details(io, results) }
+      symbols = states.map { |state| state.print_details(io) }
       io.puts unless symbols.all? { |symbol| symbol == :no_details }
     end
 
@@ -281,7 +281,7 @@ module Minitest
         message = Colorizer.colorize('  ALL TESTS PASS!  (^_^)/', all_passed_color)
       else
         messages = MinitestBender.states.values.map do |state|
-          summary_message = state.summary_message(results)
+          summary_message = state.summary_message
           final_divider_color = state.color unless summary_message.empty?
           summary_message
         end
