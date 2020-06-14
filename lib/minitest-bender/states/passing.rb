@@ -17,6 +17,10 @@ module MinitestBender
         :no_details
       end
 
+      def print_detail(_io, _result)
+        # do nothing
+      end
+
       def summary_message
         return '' if results.empty?
         colored("#{results.size} passed")

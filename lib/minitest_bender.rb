@@ -14,6 +14,16 @@ require 'minitest-bender/results/base'
 require 'minitest-bender/results/test'
 require 'minitest-bender/results/expectation'
 
+require 'minitest-bender/recorders/compact'
+require 'minitest-bender/recorders/verbose'
+
+require 'minitest-bender/sections/sorted_overview'
+require 'minitest-bender/sections/time_ranking'
+require 'minitest-bender/sections/issues'
+require 'minitest-bender/sections/activity'
+require 'minitest-bender/sections/suite_status'
+require 'minitest-bender/sections/silence'
+
 require 'minitest-bender/result_factory'
 require 'minitest-bender/utils'
 
