@@ -67,7 +67,7 @@ module MinitestBender
 
       # credit where credit is due: minitest-line
       def source_location
-        if minitest_result.respond_to?(:source_location) # minitest >= 5.11
+        if minitest_at_least_5_11?
           minitest_result.source_location
         else
           minitest_result.method(minitest_result.name).source_location
@@ -83,11 +83,15 @@ module MinitestBender
       end
 
       def class_name
-        if minitest_result.respond_to?(:klass) # minitest >= 5.11
+        if minitest_at_least_5_11?
           minitest_result.klass
         else
           minitest_result.class.name
         end
+      end
+
+      def minitest_at_least_5_11?
+        @minitest_at_least_5_11 ||= Gem.loaded_specs['minitest'].version >= Gem::Version.new('5.11')
       end
 
       def class_separator
