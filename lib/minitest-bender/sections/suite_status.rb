@@ -19,7 +19,7 @@ module MinitestBender
             summary_message
           end
 
-          message = "  #{messages.reject(&:empty?).join(', ').gsub(/(.*), /, '\1 and ')}"
+          message = "  #{Utils.english_join(messages)}"
         end
         io.puts(message)
 
