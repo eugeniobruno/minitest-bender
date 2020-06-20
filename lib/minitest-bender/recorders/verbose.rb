@@ -6,6 +6,7 @@ module MinitestBender
       end
 
       def print_header(result)
+        io.puts
         io.puts(result.header_for_verbose_recorder)
       end
 

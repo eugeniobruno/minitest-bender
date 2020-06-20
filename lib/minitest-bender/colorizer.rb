@@ -29,13 +29,31 @@ module MinitestBender
     COLORS.freeze
 
     class << self
+      def custom_colors=(custom_colors)
+        @custom_colors = custom_colors
+      end
+
       def colorize(string, color, *args)
         if color == :normal
           Paint[string, *args]
         else
-          color_value = COLORS.fetch(color)
+          color_value = colors.fetch(color)
           Paint[string, color_value, *args]
         end
+      end
+
+      def color_keys
+        COLORS.keys
+      end
+
+      private
+
+      def colors
+        @colors ||= COLORS.merge(custom_colors)
+      end
+
+      def custom_colors
+        @custom_colors || {}
       end
     end
   end

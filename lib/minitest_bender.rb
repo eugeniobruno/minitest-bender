@@ -2,6 +2,7 @@
 
 require 'minitest-bender/version'
 
+require 'minitest-bender/configuration'
 require 'minitest-bender/colorizer'
 
 require 'minitest-bender/states/base'
@@ -16,13 +17,13 @@ require 'minitest-bender/results/expectation'
 
 require 'minitest-bender/recorders/compact'
 require 'minitest-bender/recorders/verbose'
+require 'minitest-bender/recorders/none'
 
 require 'minitest-bender/sections/sorted_overview'
 require 'minitest-bender/sections/time_ranking'
 require 'minitest-bender/sections/issues'
 require 'minitest-bender/sections/activity'
 require 'minitest-bender/sections/suite_status'
-require 'minitest-bender/sections/silence'
 
 require 'minitest-bender/result_factory'
 require 'minitest-bender/utils'
@@ -45,9 +46,5 @@ module MinitestBender
 
   def self.passing_color
     states.fetch('.').color
-  end
-
-  def self.backtrace_view=(backtrace_view)
-    states.fetch('E').backtrace_view = backtrace_view
   end
 end

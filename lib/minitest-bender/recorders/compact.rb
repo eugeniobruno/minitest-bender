@@ -6,6 +6,7 @@ module MinitestBender
       end
 
       def print_header(result)
+        io.puts
         io.print("#{result.header_for_compact_recorder} ")
       end
 

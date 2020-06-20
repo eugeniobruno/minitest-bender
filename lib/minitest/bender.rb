@@ -5,23 +5,23 @@ module Minitest
   class Bender < AbstractReporter
     Colorizer = MinitestBender::Colorizer
 
-    @@reporter_options = {
-      recorder: :compact,
-      overview: :sorted,
-      time_ranking_size: 5,
-      backtrace_view: :user
-    }
-
     attr_accessor :io, :options
     attr_reader :previous_context, :results, :results_by_context, :started_at
 
-    def self.enable!(reporter_options = {})
-      @@is_enabled = true
-      @@reporter_options.merge!(reporter_options)
-    end
+    class << self
+      def enable!(client_config = {})
+        @is_enabled = true
+        configuration.add_client_config(client_config)
+        Colorizer.custom_colors = configuration.custom_colors
+      end
 
-    def self.enabled?
-      @@is_enabled ||= false
+      def enabled?
+        @is_enabled ||= false
+      end
+
+      def configuration
+        @configuration ||= MinitestBender::Configuration.new
+      end
     end
 
     def initialize(io, options = {})
@@ -31,7 +31,6 @@ module Minitest
       @results = []
       @results_by_context = {}
       @time_ranking_is_relevant = false
-      MinitestBender.backtrace_view = @@reporter_options.fetch(:backtrace_view).to_sym
     end
 
     def start
@@ -52,7 +51,6 @@ module Minitest
       current_context = result.context
 
       if current_context != previous_context
-        io.puts
         recorder.print_header(result)
         @previous_context = current_context
       end
@@ -84,6 +82,10 @@ module Minitest
 
     private
 
+    def configuration
+      self.class.configuration
+    end
+
     def flush_stdio
       # as we might already have some output from the test itself,
       # make sure we see *all* of it before we report anything
@@ -97,12 +99,14 @@ module Minitest
 
     def recorder
       @recorder ||= begin
-        recorder_sym = @@reporter_options.fetch(:recorder)
+        recorder_sym = configuration.recorder
         case recorder_sym
         when :compact
           MinitestBender::Recorders::Compact.new(io)
         when :verbose
           MinitestBender::Recorders::Verbose.new(io)
+        when :none
+          MinitestBender::Recorders::None.new
         else
           raise "unknown recorder: #{recorder_sym}"
         end
@@ -133,54 +137,35 @@ module Minitest
       print_divider(:tests, message.length)
     end
 
-    def sorted_overview_enabled?
-      @@reporter_options.fetch(:overview) == :sorted
-    end
-
-    def must_print_time_ranking?
-      @time_ranking_is_relevant
-    end
-
     def time_ranking_size
-      @@reporter_options.fetch(:time_ranking_size)
+      if @time_ranking_is_relevant
+        configuration.time_ranking_size
+      else
+        0
+      end
     end
 
     def sections
-      [
-        sorted_overview_section,
-        time_ranking_section,
-        issues_section,
-        activity_section,
-        suite_status_section
-      ].flatten(1)
-    end
-
-    def sorted_overview_section
-      if sorted_overview_enabled?
-        MinitestBender::Sections::SortedOverview.new(io, results_by_context)
-      else
-        MinitestBender::Sections::Silence.new
+      section_names.map do |section_name|
+        case section_name
+        when :overview
+          MinitestBender::Sections::SortedOverview.new(io, results_by_context)
+        when :time_ranking
+          MinitestBender::Sections::TimeRanking.new(io, time_ranking_size, results)
+        when :issues
+          MinitestBender::Sections::Issues.new(io)
+        when :activity
+          MinitestBender::Sections::Activity.new(io, started_at, results)
+        when :suite_status
+          MinitestBender::Sections::SuiteStatus.new(io, options_args, results)
+        else
+          raise "unknown section: #{recorder_sym}"
+        end
       end
     end
 
-    def time_ranking_section
-      if must_print_time_ranking?
-        MinitestBender::Sections::TimeRanking.new(io, time_ranking_size, results)
-      else
-        MinitestBender::Sections::Silence.new
-      end
-    end
-
-    def issues_section
-      MinitestBender::Sections::Issues.new(io)
-    end
-
-    def activity_section
-      MinitestBender::Sections::Activity.new(io, started_at, results)
-    end
-
-    def suite_status_section
-      MinitestBender::Sections::SuiteStatus.new(io, options_args, results)
+    def section_names
+      configuration.sections
     end
   end
 
