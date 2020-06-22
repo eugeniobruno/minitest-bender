@@ -111,7 +111,7 @@ module MinitestBender
       end
 
       def formatted_name_with_context
-        "#{Colorizer.colorize(context, :normal)} #{name_prefix}#{name}"
+        "#{Colorizer.colorize(context, :normal)} #{name_prefix}#{Colorizer.colorize(name, :normal, :bold)}"
       end
 
       def formatted_label
