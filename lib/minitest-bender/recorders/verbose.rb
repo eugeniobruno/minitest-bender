@@ -12,7 +12,9 @@ module MinitestBender
 
       def print_content(result)
         io.puts(result.line_for_verbose_recorder)
-        result.state.print_detail(io, result)
+        lines = result.state.detail_lines_without_header(result)
+        lines << '' unless lines.empty?
+        lines.each { |line| io.puts line }
       end
 
       private

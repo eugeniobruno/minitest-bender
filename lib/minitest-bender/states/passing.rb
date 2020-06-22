@@ -17,8 +17,12 @@ module MinitestBender
         :no_details
       end
 
-      def print_detail(_io, _result)
-        # do nothing
+      def detail_lines(_result)
+        []
+      end
+
+      def detail_lines_without_header(_result)
+        []
       end
 
       def summary_message

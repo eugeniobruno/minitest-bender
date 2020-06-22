@@ -31,20 +31,38 @@ module MinitestBender
         io.puts formatted_group_label
         io.puts
         sorted_results.each_with_index do |result, i|
-          print_detail(io, result)
+          detail_lines(result).each { |line| io.puts line }
           io.puts if i < results.size - 1
         end
         io.puts
         :printed_details
       end
 
-      def print_detail(io, result)
+      def detail_lines(result)
         number = "#{result.execution_order})".ljust(4)
         padding = ' ' * (number.size + 4)
-        io.puts(result.details_header(number))
-        do_print_details(io, result, padding)
-        io.puts
-        io.puts(result.rerun_line(padding))
+        lines = []
+        lines << result.details_header(number)
+
+        lines += inner_detail_lines(result, padding)
+
+        lines << ''
+        lines << result.rerun_line(padding)
+        lines
+      end
+
+      def detail_lines_without_header(result)
+        number = "#{result.execution_order})".ljust(4)
+        padding = ' ' * (number.size + 4)
+        lines = []
+
+        lines += inner_detail_lines(result, padding).tap do |ls|
+          ls[0] = "    #{number}#{ls[0].strip}" unless ls.empty?
+        end
+
+        lines << ''
+        lines << result.rerun_line(padding)
+        lines
       end
 
       def color
@@ -73,11 +91,13 @@ module MinitestBender
         Colorizer.colorize(string, color, *args)
       end
 
-      def do_print_details(io, result, padding)
+      def inner_detail_lines(result, padding)
+        lines = []
         result.failures[0].message.split("\n").each do |line|
-          io.puts "#{padding}#{colored(line)}"
+          lines << "#{padding}#{colored(line)}"
         end
-        io.puts "#{padding}#{Colorizer.colorize(location(result), :backtrace)}:"
+        lines << "#{padding}#{Colorizer.colorize(location(result), :backtrace)}:"
+        lines
       end
 
       def location(result)

@@ -24,12 +24,14 @@ module MinitestBender
 
       private
 
-      def do_print_details(io, result, padding)
+      def inner_detail_lines(result, padding)
+        lines = []
         message = colored(error_message(result))
-        io.puts "#{padding}#{message.gsub("\n", "\n#{padding}")}"
+        lines << "#{padding}#{message.gsub("\n", "\n#{padding}")}"
         backtrace(result).each do |line|
-          io.puts "#{padding}#{Colorizer.colorize(line, :backtrace)}"
+          lines << "#{padding}#{Colorizer.colorize(line, :backtrace)}"
         end
+        lines
       end
 
       def error_message(result)
