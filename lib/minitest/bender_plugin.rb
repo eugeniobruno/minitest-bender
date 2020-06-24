@@ -6,6 +6,11 @@ module Minitest
       Bender.enable!
     end
 
+    opts.on '--bender-mode=MODE', 'Bender: choose the mode of interaction with other reporters. (oblivious | cooperative)' do |m|
+      Bender.configuration.mode = m
+      Bender.enable!
+    end
+
     opts.on '--bender-recorder=RECORDER', 'Bender: choose how test results are printed as the suite runs. (compact | verbose | none)' do |r|
       Bender.configuration.recorder = r
       Bender.enable!
@@ -41,7 +46,7 @@ module Minitest
 
   def self.plugin_bender_init(options)
     return unless Bender.enabled?
-    Minitest.reporter.reporters.clear
+    Minitest.reporter.reporters.clear unless Bender.configuration.cooperative?
     Minitest.reporter << Bender.new(options.fetch(:io, $stdout), options)
   end
 end

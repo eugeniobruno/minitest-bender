@@ -1,6 +1,7 @@
 module MinitestBender
   class Configuration
     DEFAULT_CONFIG = {
+      mode: :oblivious,
       recorder: :compact,
       sections: [:overview, :time_ranking, :issues, :activity, :suite_status],
       sections_blacklist: [],
@@ -16,6 +17,10 @@ module MinitestBender
 
     def add_client_config(config)
       client_config.merge!(config)
+    end
+
+    def mode=(mode)
+      options_config[:mode] = mode
     end
 
     def recorder=(recorder)
@@ -41,6 +46,10 @@ module MinitestBender
     def set_custom_color(color_key, color)
       options_config[:custom_colors] ||= {}
       options_config[:custom_colors][color_key] = color
+    end
+
+    def cooperative?
+      final_config.fetch(:mode) == :cooperative
     end
 
     def recorder
@@ -78,6 +87,7 @@ module MinitestBender
 
     def env_config
       {
+        mode: ENV['MINITEST_BENDER_MODE'],
         recorder: ENV['MINITEST_BENDER_RECORDER'],
         sections: ENV['MINITEST_BENDER_SECTIONS'],
         sections_blacklist: ENV['MINITEST_BENDER_SECTIONS_BLACKLIST'],
@@ -108,6 +118,7 @@ module MinitestBender
 
     def final_config
       merged_config.tap do |config|
+        config[:mode] = config[:mode].to_sym
         config[:recorder] = config[:recorder].to_sym
         config[:sections] = parsed_list(config[:sections])
         config[:sections_blacklist] = parsed_list(config[:sections_blacklist])
