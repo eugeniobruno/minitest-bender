@@ -144,7 +144,14 @@ module MinitestBender
         return unless (relative_location = state.test_location(self))
 
         relative_location = relative_location.split(':').first
-        "rake TEST=#{relative_location} TESTOPTS=\"--name=#{name_for_rerun_command}\""
+
+        prefix = Minitest::Bender.configuration.run_command
+
+        if prefix.include?('rake')
+          "#{prefix} TEST=#{relative_location} TESTOPTS=\"--name=#{name_for_rerun_command}\""
+        else
+          "#{prefix} #{relative_location} --name=#{name_for_rerun_command}"
+        end
       end
     end
   end

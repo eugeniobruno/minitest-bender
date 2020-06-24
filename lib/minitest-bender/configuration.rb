@@ -7,6 +7,7 @@ module MinitestBender
       sections_blacklist: [],
       time_ranking_size: 5,
       backtrace_view: :user,
+      run_command: defined?(Rake) ? 'rake' : 'ruby',
       custom_colors: {}
     }.freeze
 
@@ -43,6 +44,10 @@ module MinitestBender
       options_config[:backtrace_view] = backtrace_view
     end
 
+    def run_command=(run_command)
+      options_config[:run_command] = run_command
+    end
+
     def set_custom_color(color_key, color)
       options_config[:custom_colors] ||= {}
       options_config[:custom_colors][color_key] = color
@@ -66,6 +71,10 @@ module MinitestBender
 
     def backtrace_view
       final_config.fetch(:backtrace_view)
+    end
+
+    def run_command
+      final_config.fetch(:run_command)
     end
 
     def custom_colors
@@ -93,6 +102,7 @@ module MinitestBender
         sections_blacklist: ENV['MINITEST_BENDER_SECTIONS_BLACKLIST'],
         time_ranking_size: ENV['MINITEST_BENDER_TIME_RANKING_SIZE'],
         backtrace_view: ENV['MINITEST_BENDER_BACKTRACE_VIEW'],
+        run_command: ENV['MINITEST_BENDER_RUN_COMMAND'],
         custom_colors: custom_colors_env_config
       }
     end
@@ -123,6 +133,7 @@ module MinitestBender
         config[:sections] = parsed_list(config[:sections])
         config[:sections_blacklist] = parsed_list(config[:sections_blacklist])
         config[:time_ranking_size] = config[:time_ranking_size].to_i
+        config[:run_command] = config[:run_command].to_s
         config[:backtrace_view] = config[:backtrace_view].to_sym
       end
     end

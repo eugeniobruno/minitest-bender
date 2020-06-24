@@ -36,6 +36,11 @@ module Minitest
       Bender.enable!
     end
 
+    opts.on('--bender-run-command=RC', 'Bender: set the prefix of rerun lines.') do |c|
+      Bender.configuration.run_command = c
+      Bender.enable!
+    end
+
     MinitestBender::Colorizer.color_keys.each do |color_key|
       opts.on("--bender-#{color_key}-color=COLOR", 'Bender: choose the different colors.') do |c|
         Bender.configuration.set_custom_color(color_key, c)
