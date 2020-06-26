@@ -42,7 +42,7 @@ module MinitestBender
         number = "#{result.execution_order})".ljust(4)
         padding = ' ' * (number.size + 4)
         lines = []
-        lines << result.details_header(number)
+        lines << "    #{number}#{result.formatted_name_with_context}"
 
         lines += inner_detail_lines(result, padding)
 

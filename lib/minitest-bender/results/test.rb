@@ -10,21 +10,13 @@ module MinitestBender
         super.gsub(/^Test|Test$/, '')
       end
 
-      def content_to_report
-        ["#{formatted_label}#{formatted_time}", "#{name} #{formatted_message}"]
-      end
-
-      def line_for_verbose_recorder
-        "#{formatted_label}#{formatted_time}" "#{name}"
+      def formatted_number
+        '' # not available
       end
 
       def sort_key
         raw_name
       end
-
-      private
-
-      attr_reader :raw_name
 
       def name
         @name ||= begin
@@ -35,6 +27,10 @@ module MinitestBender
           words.join(' ')
         end
       end
+
+      private
+
+      attr_reader :raw_name
 
       def name_for_rerun_command
         minitest_result.name

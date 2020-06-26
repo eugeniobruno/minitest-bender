@@ -24,32 +24,28 @@ module MinitestBender
         @context ||= context_path.join(context_separator)
       end
 
+      def context_path
+        class_name.split(class_separator)
+      end
+
       def context_separator
         CONTEXT_SEPARATOR
-      end
-
-      def header_for_compact_recorder
-        path = context_path[0...-1].join(context_separator)
-        path << context_separator unless path.empty?
-        klass = context_path.last
-
-        "#{formatted_header_prefix}#{path}#{Colorizer.colorize(klass, :normal, :bold)}"
-      end
-
-      def header_for_verbose_recorder
-        Colorizer.colorize(header_prefix + context, :normal, :bold)
-      end
-
-      def header_for_sorted_overview(formatted_context)
-        formatted_header_prefix + formatted_context
       end
 
       def to_icon
         state.colored_icon
       end
 
-      def details_header(number)
-        "    #{number}#{formatted_name_with_context}"
+      def header_prefix
+        HEADER_PREFIX
+      end
+
+      def formatted_header_prefix
+        Colorizer.colorize(header_prefix, :normal, :bold)
+      end
+
+      def formatted_name_with_context
+        "#{Colorizer.colorize(context, :normal)} #{name_prefix}#{Colorizer.colorize(name, :normal, :bold)}"
       end
 
       def rerun_line(padding)
@@ -57,8 +53,30 @@ module MinitestBender
         "#{padding}#{Colorizer.colorize(unformatted, :tests)}"
       end
 
-      def line_for_time_ranking
-        "#{formatted_time} #{formatted_name_with_context}"
+      def formatted_label
+        "    #{state.formatted_label}"
+      end
+
+      def formatted_time
+        time_in_s = time
+        time_with_unit =
+          case time_in_s
+          when 0...1
+            sprintf('%.0fms ', time_in_s * 1000)
+          when 1...10
+            sprintf('%.2fs ', time_in_s)
+          when 10...100
+            sprintf('%.1fs ', time_in_s)
+          when 100...10000
+            sprintf('%.0fs ', time_in_s)
+          else
+            sprintf('%.0fs', time_in_s)
+          end
+        Colorizer.colorize(time_with_unit.rjust(6), :time)
+      end
+
+      def formatted_message
+        " #{state.formatted_message(self)}"
       end
 
       def file_path
@@ -78,10 +96,6 @@ module MinitestBender
 
       attr_reader :minitest_result
 
-      def context_path
-        class_name.split(class_separator)
-      end
-
       def class_name
         if minitest_at_least_5_11?
           minitest_result.klass
@@ -100,44 +114,6 @@ module MinitestBender
 
       def name_prefix
         NAME_PREFIX
-      end
-
-      def header_prefix
-        HEADER_PREFIX
-      end
-
-      def formatted_header_prefix
-        Colorizer.colorize(header_prefix, :normal, :bold)
-      end
-
-      def formatted_name_with_context
-        "#{Colorizer.colorize(context, :normal)} #{name_prefix}#{Colorizer.colorize(name, :normal, :bold)}"
-      end
-
-      def formatted_label
-        "    #{state.formatted_label}"
-      end
-
-      def formatted_message
-        " #{state.formatted_message(self)}"
-      end
-
-      def formatted_time
-        time_in_s = time
-        time_with_unit =
-          case time_in_s
-          when 0...1
-            sprintf('%.0fms ', time_in_s * 1000)
-          when 1...10
-            sprintf('%.2fs ', time_in_s)
-          when 10...100
-            sprintf('%.1fs ', time_in_s)
-          when 100...10000
-            sprintf('%.0fs ', time_in_s)
-          else
-            sprintf('%.0fs', time_in_s)
-          end
-        Colorizer.colorize(time_with_unit.rjust(6), :time)
       end
 
       def rerun_command

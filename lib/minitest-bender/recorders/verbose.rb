@@ -7,11 +7,11 @@ module MinitestBender
 
       def print_header(result)
         io.puts
-        io.puts(result.header_for_verbose_recorder)
+        io.puts(Colorizer.colorize(result.header_prefix + result.context, :normal, :bold))
       end
 
       def print_content(result)
-        io.puts(result.line_for_verbose_recorder)
+        io.puts("#{result.formatted_label}#{result.formatted_time}#{result.formatted_number} #{result.name}")
         lines = result.state.detail_lines_without_header(result)
         lines << '' unless lines.empty?
         lines.each { |line| io.puts line }

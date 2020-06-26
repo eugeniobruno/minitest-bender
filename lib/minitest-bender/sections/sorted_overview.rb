@@ -46,12 +46,13 @@ module MinitestBender
 
         formatted_context = formatted_old_and_new(previous_split_context, split_context, separator)
 
-        io.puts(result.header_for_sorted_overview(formatted_context))
+        io.puts(result.formatted_header_prefix + formatted_context)
         split_context
       end
 
       def print_result_line(result, previous_words)
-        prefix, message = result.content_to_report
+        prefix = "#{result.formatted_label}#{result.formatted_time}#{result.formatted_number}"
+        message = "#{result.name} #{result.formatted_message}"
 
         words = message.split(' ')
 

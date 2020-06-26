@@ -14,7 +14,7 @@ module MinitestBender
         io.puts
         results.sort_by { |r| -r.time }.take(size).each_with_index do |result, i|
           number = "#{i + 1})".ljust(4)
-          io.puts "    #{number}#{result.line_for_time_ranking}"
+          io.puts "    #{number}#{result.formatted_time} #{result.formatted_name_with_context}"
         end
         print_divider
         io.puts
