@@ -76,7 +76,7 @@ module MinitestBender
       end
 
       def formatted_message
-        " #{state.formatted_message(self)}"
+        state.formatted_message(self)
       end
 
       def file_path

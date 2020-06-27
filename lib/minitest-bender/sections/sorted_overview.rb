@@ -52,13 +52,18 @@ module MinitestBender
 
       def print_result_line(result, previous_words)
         prefix = "#{result.formatted_label}#{result.formatted_time}#{result.formatted_number}"
-        message = "#{result.name} #{result.formatted_message}"
-
-        words = message.split(' ')
+        words = result.name.split(' ')
 
         formatted_words = formatted_old_and_new(previous_words, words, ' ')
 
-        io.puts("#{prefix} #{formatted_words}")
+        formatted_message = result.formatted_message
+        if formatted_message.empty?
+          details = ''
+        else
+          details = "  #{formatted_message.split("\n").first}"
+        end
+
+        io.puts("#{prefix} #{formatted_words}#{details}")
         words
       end
 
