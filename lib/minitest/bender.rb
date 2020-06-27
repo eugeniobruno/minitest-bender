@@ -159,7 +159,7 @@ module Minitest
         when :suite_status
           MinitestBender::Sections::SuiteStatus.new(io, options_args, results)
         else
-          raise "unknown section: #{recorder_sym}"
+          raise "unknown section: #{section_name}"
         end
       end
     end
