@@ -9,10 +9,7 @@ module MinitestBender
       def_delegators :@minitest_result, :passed?, :skipped?, :assertions, :failures, :time
       attr_reader :state, :execution_order
 
-      CLASS_SEPARATOR = '::'
-      CONTEXT_SEPARATOR = ' ▸ '
-      NAME_PREFIX = '♦ '
-      HEADER_PREFIX = '• '
+      NAME_PREFIX = '♦'
 
       def initialize(minitest_result)
         @minitest_result = minitest_result
@@ -21,31 +18,15 @@ module MinitestBender
       end
 
       def context
-        @context ||= context_path.join(context_separator)
-      end
-
-      def context_path
-        class_name.split(class_separator)
-      end
-
-      def context_separator
-        CONTEXT_SEPARATOR
+        @context ||= ResultContext.new(adjusted_class_name)
       end
 
       def to_icon
         state.colored_icon
       end
 
-      def header_prefix
-        HEADER_PREFIX
-      end
-
-      def formatted_header_prefix
-        Colorizer.colorize(header_prefix, :normal, :bold)
-      end
-
       def formatted_name_with_context
-        "#{Colorizer.colorize(context, :normal)} #{name_prefix}#{Colorizer.colorize(name, :normal, :bold)}"
+        "#{Colorizer.colorize(context, :normal)} #{name_prefix} #{Colorizer.colorize(name, :normal, :bold)}"
       end
 
       def rerun_line(padding)
@@ -95,6 +76,10 @@ module MinitestBender
       private
 
       attr_reader :minitest_result
+
+      def adjusted_class_name
+        class_name
+      end
 
       def class_name
         if minitest_at_least_5_11?

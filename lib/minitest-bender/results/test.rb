@@ -6,10 +6,6 @@ module MinitestBender
         @raw_name = raw_name
       end
 
-      def context
-        super.gsub(/^Test|Test$/, '')
-      end
-
       def formatted_number
         '' # not available
       end
@@ -31,6 +27,10 @@ module MinitestBender
       private
 
       attr_reader :raw_name
+
+      def adjusted_class_name
+        class_name.gsub(/^Test|Test$/, '')
+      end
 
       def name_for_rerun_command
         minitest_result.name

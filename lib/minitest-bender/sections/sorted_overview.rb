@@ -11,13 +11,14 @@ module MinitestBender
 
         io.puts(formatted_label)
         io.puts
-        split_context = []
+        previous_context_path = []
         results_by_context.sort.each do |context, results|
           io.puts
-          split_context = print_header(results.first, split_context)
+          print_context(context, previous_context_path)
+          previous_context_path = context.path
           words = []
           results.sort_by(&:sort_key).each do |result|
-            words = print_result_line(result, words)
+            words = print_result(result, words)
           end
         end
         io.puts
@@ -40,17 +41,17 @@ module MinitestBender
         "  #{Colorizer.colorize('SORTED OVERVIEW', :normal, :bold, :underline)}"
       end
 
-      def print_header(result, previous_split_context)
-        separator = result.context_separator
-        split_context = result.context.split(separator)
+      def print_context(result_context, previous_context_path)
+        formatted_context = formatted_old_and_new(
+          previous_context_path,
+          result_context.path,
+          result_context.separator
+        )
 
-        formatted_context = formatted_old_and_new(previous_split_context, split_context, separator)
-
-        io.puts(result.formatted_header_prefix + formatted_context)
-        split_context
+        io.puts(result_context.prefix + formatted_context)
       end
 
-      def print_result_line(result, previous_words)
+      def print_result(result, previous_words)
         prefix = "#{result.formatted_label}#{result.formatted_time}#{result.formatted_number}"
         words = result.name.split(' ')
 

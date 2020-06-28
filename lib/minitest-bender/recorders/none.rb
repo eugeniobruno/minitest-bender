@@ -1,11 +1,11 @@
 module MinitestBender
   module Recorders
     class None
-      def print_header(_result)
+      def print_context(_result_context)
         # do nothing
       end
 
-      def print_content(_result)
+      def print_result(_result)
         # do nothing
       end
     end

@@ -51,7 +51,7 @@ module Minitest
       current_context = result.context
 
       if current_context != previous_context
-        recorder.print_header(result)
+        recorder.print_context(current_context)
         @previous_context = current_context
       end
 
@@ -59,7 +59,7 @@ module Minitest
 
       @time_ranking_is_relevant = true if result.time > 0.01
 
-      recorder.print_content(result)
+      recorder.print_result(result)
       io.flush
     end
 

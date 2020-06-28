@@ -5,12 +5,12 @@ module MinitestBender
         @io = io
       end
 
-      def print_header(result)
+      def print_context(result_context)
         io.puts
 
-        context_path = result.context_path
-        context_separator = result.context_separator
-        prefix = result.formatted_header_prefix
+        context_path = result_context.path
+        context_separator = result_context.separator
+        prefix = result_context.prefix
 
         path = context_path[0...-1].join(context_separator)
         path << context_separator unless path.empty?
@@ -19,7 +19,7 @@ module MinitestBender
         io.print("#{prefix}#{path}#{Colorizer.colorize(klass, :normal, :bold)} ")
       end
 
-      def print_content(result)
+      def print_result(result)
         io.print(result.to_icon)
       end
 

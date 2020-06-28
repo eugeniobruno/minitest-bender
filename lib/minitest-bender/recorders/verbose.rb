@@ -5,12 +5,12 @@ module MinitestBender
         @io = io
       end
 
-      def print_header(result)
+      def print_context(result_context)
         io.puts
-        io.puts(Colorizer.colorize(result.header_prefix + result.context, :normal, :bold))
+        io.puts(Colorizer.colorize(result_context.with_prefix, :normal, :bold))
       end
 
-      def print_content(result)
+      def print_result(result)
         io.puts("#{result.formatted_label}#{result.formatted_time}#{result.formatted_number} #{result.name}")
         lines = result.state.detail_lines_without_header(result)
         lines << '' unless lines.empty?

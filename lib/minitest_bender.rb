@@ -25,6 +25,7 @@ require 'minitest-bender/sections/issues'
 require 'minitest-bender/sections/activity'
 require 'minitest-bender/sections/suite_status'
 
+require 'minitest-bender/result_context'
 require 'minitest-bender/result_factory'
 require 'minitest-bender/utils'
 
