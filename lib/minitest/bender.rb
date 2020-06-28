@@ -77,7 +77,7 @@ module Minitest
       io.puts
       print_divider(:normal)
 
-      sections.each(&:print)
+      print_sections
     end
 
     private
@@ -125,24 +125,24 @@ module Minitest
       results.size
     end
 
-    def print_divider(color, line_length = 23)
-      io.puts(Colorizer.colorize("  #{'_' * line_length}", color, :bold))
-      io.puts
-    end
-
     def print_no_tests_status
-      message = 'NO TESTS WERE RUN!  (-_-)zzz'
+      message = no_tests_message
       padded_message = "  #{message}"
       io.puts(Colorizer.colorize(padded_message, :tests))
       print_divider(:tests, message.length)
     end
 
-    def time_ranking_size
-      if @time_ranking_is_relevant
-        configuration.time_ranking_size
-      else
-        0
-      end
+    def no_tests_message
+      'NO TESTS WERE RUN!  (-_-)zzz'.freeze
+    end
+
+    def print_divider(color, line_length = 23)
+      io.puts(Colorizer.colorize("  #{'_' * line_length}", color, :bold))
+      io.puts
+    end
+
+    def print_sections
+      sections.each(&:print)
     end
 
     def sections
@@ -166,6 +166,14 @@ module Minitest
 
     def section_names
       configuration.sections
+    end
+
+    def time_ranking_size
+      if @time_ranking_is_relevant
+        configuration.time_ranking_size
+      else
+        0
+      end
     end
   end
 
