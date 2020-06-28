@@ -29,7 +29,8 @@ module MinitestBender
         message = colored(error_message(result))
         lines << "#{padding}#{message.gsub("\n", "\n#{padding}")}"
         backtrace(result).each do |line|
-          lines << "#{padding}#{Colorizer.colorize(line, :backtrace)}"
+          adjusted_line = Utils.with_home_shorthand(line)
+          lines << "#{padding}#{Colorizer.colorize(adjusted_line, :backtrace)}"
         end
         lines
       end
