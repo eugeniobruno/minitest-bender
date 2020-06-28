@@ -10,16 +10,17 @@ module MinitestBender
       fail:       'ff5f5f', # 203       - IndianRed1
       error:      'ffd75f', # 221       - LightGoldenrod2
       skip:       '5fd7ff', # 81        - SteelBlue1
-      tests:      '5fd7ff', # 81        - SteelBlue1
+      tests:      '5fafaf', # 73        - CadetBlue
       assertions: 'd75fd7', # 170       - Orchid
       time:       '878787', # 102       - Grey53
-      number:     'af8787', # 138       - RosyBrown
+      number:     '5fafaf', # 73        - CadetBlue
       backtrace:  'af8787'  # 138       - RosyBrown
     }
 
     # In compatibility modes, colors that are mapped to black are avoided.
     SAFE_COLORS = {
       pass:       '00ff5f', # 47        - SpringGreen2
+      tests:      'blue',
       time:       'gray',
       number:     'gray',
       backtrace:  'gray'
