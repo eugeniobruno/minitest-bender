@@ -13,8 +13,12 @@ module MinitestBender
         " #{Colorizer.colorize(number, :number)} "
       end
 
-      def sort_key
-        @sort_key ||= number.to_i
+      def number_sort_key
+        @number_sort_key ||= number.to_i
+      end
+
+      def name_sort_key
+        name
       end
 
       private

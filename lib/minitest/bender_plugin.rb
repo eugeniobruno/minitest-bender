@@ -26,6 +26,11 @@ module Minitest
       Bender.enable!
     end
 
+    opts.on '--bender-overview-sort-key=KEY', 'Bender: choose how tests are sorted in the overview. (name | number)' do |k|
+      Bender.configuration.overview_sort_key = k
+      Bender.enable!
+    end
+
     opts.on '--bender-time-ranking-size=SIZE', 'Bender: choose the time ranking maximum size.' do |s|
       Bender.configuration.time_ranking_size = s
       Bender.enable!

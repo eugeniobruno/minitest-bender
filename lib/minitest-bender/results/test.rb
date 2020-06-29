@@ -10,7 +10,11 @@ module MinitestBender
         '' # not available
       end
 
-      def sort_key
+      def number_sort_key
+        raw_name # because the number is not available
+      end
+
+      def name_sort_key
         raw_name
       end
 

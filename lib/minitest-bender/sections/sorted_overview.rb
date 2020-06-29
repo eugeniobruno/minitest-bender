@@ -17,7 +17,7 @@ module MinitestBender
           print_context(context, previous_context_path)
           previous_context_path = context.path
           words = []
-          results.sort_by(&:sort_key).each do |result|
+          results.sort_by(&sort_key).each do |result|
             words = print_result(result, words)
           end
         end
@@ -49,6 +49,10 @@ module MinitestBender
         )
 
         io.puts(result_context.prefix + formatted_context)
+      end
+
+      def sort_key
+        @sort_key ||= "#{Minitest::Bender.configuration.overview_sort_key}_sort_key".to_sym
       end
 
       def print_result(result, previous_words)

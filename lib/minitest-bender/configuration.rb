@@ -5,6 +5,7 @@ module MinitestBender
       recorder: :compact,
       sections: [:overview, :time_ranking, :issues, :activity, :suite_status],
       sections_blacklist: [],
+      overview_sort_key: :name,
       time_ranking_size: 5,
       backtrace_view: :user,
       run_command: defined?(Rake) ? 'rake' : 'ruby',
@@ -36,6 +37,10 @@ module MinitestBender
       options_config[:sections_blacklist] = sections_blacklist
     end
 
+    def overview_sort_key=(overview_sort_key)
+      options_config[:overview_sort_key] = overview_sort_key
+    end
+
     def time_ranking_size=(time_ranking_size)
       options_config[:time_ranking_size] = time_ranking_size
     end
@@ -63,6 +68,10 @@ module MinitestBender
 
     def sections
       sections_whitelist - sections_blacklist
+    end
+
+    def overview_sort_key
+      final_config.fetch(:overview_sort_key)
     end
 
     def time_ranking_size
@@ -100,6 +109,7 @@ module MinitestBender
         recorder: ENV['MINITEST_BENDER_RECORDER'],
         sections: ENV['MINITEST_BENDER_SECTIONS'],
         sections_blacklist: ENV['MINITEST_BENDER_SECTIONS_BLACKLIST'],
+        overview_sort_key: ENV['MINITEST_BENDER_OVERVIEW_SORT_KEY'],
         time_ranking_size: ENV['MINITEST_BENDER_TIME_RANKING_SIZE'],
         backtrace_view: ENV['MINITEST_BENDER_BACKTRACE_VIEW'],
         run_command: ENV['MINITEST_BENDER_RUN_COMMAND'],
@@ -132,6 +142,7 @@ module MinitestBender
         config[:recorder] = config[:recorder].to_sym
         config[:sections] = parsed_list(config[:sections])
         config[:sections_blacklist] = parsed_list(config[:sections_blacklist])
+        config[:overview_sort_key] = config[:overview_sort_key].to_sym
         config[:time_ranking_size] = config[:time_ranking_size].to_i
         config[:run_command] = config[:run_command].to_s
         config[:backtrace_view] = config[:backtrace_view].to_sym
