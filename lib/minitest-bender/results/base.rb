@@ -25,6 +25,10 @@ module MinitestBender
         state.colored_icon
       end
 
+      def name_sort_key
+        name
+      end
+
       def formatted_name_with_context
         "#{Colorizer.colorize(context, :normal)} #{name_prefix} #{Colorizer.colorize(name, :normal, :bold)}"
       end
@@ -61,7 +65,11 @@ module MinitestBender
       end
 
       def file_path
-        source_location[0]
+        @file_path ||= source_location[0]
+      end
+
+      def source_line_number
+        @source_line_number ||= source_location[1]
       end
 
       # credit where credit is due: minitest-line
@@ -69,7 +77,7 @@ module MinitestBender
         if minitest_at_least_5_11?
           minitest_result.source_location
         else
-          minitest_result.method(minitest_result.name).source_location
+          minitest_result.method(minitest_result.name).source_location rescue ['unknown', -1]
         end
       end
 

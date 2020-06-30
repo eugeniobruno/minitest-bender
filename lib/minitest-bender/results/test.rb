@@ -6,16 +6,21 @@ module MinitestBender
         @raw_name = raw_name
       end
 
-      def formatted_number
-        '' # not available
+      def formatted_number(sorted_siblings = nil)
+        return '' if sorted_siblings.nil?
+
+        number = sorted_siblings.find_index do |result|
+          result.source_line_number > source_line_number
+        end || sorted_siblings.size
+        # this is never 0 because sorted_siblings includes self
+
+        padded_number = number.to_s.rjust(4, '0')
+
+        " #{Colorizer.colorize(padded_number, :number)} "
       end
 
       def number_sort_key
-        raw_name # because the number is not available
-      end
-
-      def name_sort_key
-        raw_name
+        source_line_number
       end
 
       def name

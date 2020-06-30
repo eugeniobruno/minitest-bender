@@ -3,7 +3,7 @@ module MinitestBender
     class SortedOverview
       def initialize(io, results_by_context)
         @io = io
-        @results_by_context = results_by_context
+        @contexts_with_results = sorted_pairs(results_by_context)
       end
 
       def print
@@ -12,13 +12,13 @@ module MinitestBender
         io.puts(formatted_label)
         io.puts
         previous_context_path = []
-        results_by_context.sort.each do |context, results|
+        contexts_with_results.each do |context, results|
           io.puts
           print_context(context, previous_context_path)
           previous_context_path = context.path
           words = []
           results.sort_by(&sort_key).each do |result|
-            words = print_result(result, words)
+            words = print_result(result, words, results)
           end
         end
         io.puts
@@ -27,14 +27,20 @@ module MinitestBender
 
       private
 
-      attr_reader :io, :results_by_context
+      attr_reader :io, :contexts_with_results
+
+      def sorted_pairs(results_by_context)
+        results_by_context.map do |context, results|
+          [context, results.sort_by(&:source_location)]
+        end.sort
+      end
 
       def trivial?
         results.size < 2
       end
 
       def results
-        results_by_context.values.flatten
+        contexts_with_results.map(&:last).flatten
       end
 
       def formatted_label
@@ -55,8 +61,10 @@ module MinitestBender
         @sort_key ||= "#{Minitest::Bender.configuration.overview_sort_key}_sort_key".to_sym
       end
 
-      def print_result(result, previous_words)
-        prefix = "#{result.formatted_label}#{result.formatted_time}#{result.formatted_number}"
+      def print_result(result, previous_words, sorted_siblings)
+        formatted_number = result.formatted_number(sorted_siblings)
+
+        prefix = "#{result.formatted_label}#{result.formatted_time}#{formatted_number}"
         words = result.name.split(' ')
 
         formatted_words = formatted_old_and_new(previous_words, words, ' ')

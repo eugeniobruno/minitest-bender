@@ -9,16 +9,12 @@ module MinitestBender
         @name = name
       end
 
-      def formatted_number
+      def formatted_number(_sorted_siblings = nil)
         " #{Colorizer.colorize(number, :number)} "
       end
 
       def number_sort_key
         @number_sort_key ||= number.to_i
-      end
-
-      def name_sort_key
-        name
       end
 
       private
