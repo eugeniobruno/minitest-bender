@@ -105,21 +105,21 @@ module MinitestBender
 
     def env_config
       {
-        mode: ENV['MINITEST_BENDER_MODE'],
-        recorder: ENV['MINITEST_BENDER_RECORDER'],
-        sections: ENV['MINITEST_BENDER_SECTIONS'],
-        sections_blacklist: ENV['MINITEST_BENDER_SECTIONS_BLACKLIST'],
-        overview_sort_key: ENV['MINITEST_BENDER_OVERVIEW_SORT_KEY'],
-        time_ranking_size: ENV['MINITEST_BENDER_TIME_RANKING_SIZE'],
-        backtrace_view: ENV['MINITEST_BENDER_BACKTRACE_VIEW'],
-        run_command: ENV['MINITEST_BENDER_RUN_COMMAND'],
+        mode: ENV['MT_BENDER_MODE'],
+        recorder: ENV['MT_BENDER_RECORDER'],
+        sections: ENV['MT_BENDER_SECTIONS'],
+        sections_blacklist: ENV['MT_BENDER_SECTIONS_BLACKLIST'],
+        overview_sort_key: ENV['MT_BENDER_OVERVIEW_SORT_KEY'],
+        time_ranking_size: ENV['MT_BENDER_TIME_RANKING_SIZE'],
+        backtrace_view: ENV['MT_BENDER_BACKTRACE_VIEW'],
+        run_command: ENV['MT_BENDER_RUN_COMMAND'],
         custom_colors: custom_colors_env_config
       }
     end
 
     def custom_colors_env_config
       Colorizer.color_keys.each_with_object({}) do |color_key, h|
-        h[color_key] = ENV["MINITEST_BENDER_#{color_key.upcase}_COLOR"]
+        h[color_key] = ENV["MT_BENDER_#{color_key.upcase}_COLOR"]
       end
     end
 
