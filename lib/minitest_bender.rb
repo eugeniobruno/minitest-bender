@@ -44,8 +44,4 @@ module MinitestBender
   def self.result_factory
     @result_factory ||= ResultFactory.new
   end
-
-  def self.passing_color
-    states.fetch('.').color
-  end
 end
