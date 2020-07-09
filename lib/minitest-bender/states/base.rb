@@ -23,6 +23,15 @@ module MinitestBender
         colored(icon)
       end
 
+      def colored_icon_with_count(padding_right = 0)
+        with_colored_icon(results.size, padding_right)
+      end
+
+      def colored_icon_with_context_count(result_context, padding_right = 0)
+        context_count = results.count { |r| r.context == result_context }
+        with_colored_icon(context_count, padding_right)
+      end
+
       def print_details(io)
         return :no_details if results.empty?
 
@@ -89,6 +98,10 @@ module MinitestBender
 
       def colored(string, *args)
         Colorizer.colorize(string, color, *args)
+      end
+
+      def with_colored_icon(message, padding_right)
+        colored("#{icon}#{message}".ljust(padding_right, ' '))
       end
 
       def inner_detail_lines(result, padding)

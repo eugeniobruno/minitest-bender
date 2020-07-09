@@ -1,5 +1,6 @@
 # coding: utf-8
 # frozen_string_literal: true
+
 require 'forwardable'
 
 module MinitestBender
@@ -39,7 +40,7 @@ module MinitestBender
       end
 
       def formatted_label
-        "    #{state.formatted_label}"
+        state.formatted_label
       end
 
       def formatted_time

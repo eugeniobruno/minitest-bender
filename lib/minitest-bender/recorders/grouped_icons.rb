@@ -1,12 +1,12 @@
 module MinitestBender
   module Recorders
-    class Compact
+    class GroupedIcons
       def initialize(io)
-        @io = io
+        @printer = Printers::Plain.new(io)
       end
 
       def print_context(result_context)
-        io.puts
+        printer.print_line
 
         context_path = result_context.path
         context_separator = result_context.separator
@@ -16,16 +16,21 @@ module MinitestBender
         path << context_separator unless path.empty?
         klass = context_path.last
 
-        io.print("#{prefix}#{path}#{Colorizer.colorize(klass, :normal, :bold)} ")
+        printer.print("#{prefix}#{path}#{Colorizer.colorize(klass, :normal, :bold)} ")
       end
 
       def print_result(result)
-        io.print(result.to_icon)
+        printer.print(result.to_icon)
+        printer.advance
+      end
+
+      def print_context_with_results(_result_context, _results)
+        # do_nothing
       end
 
       private
 
-      attr_reader :io
+      attr_reader :printer
     end
   end
 end

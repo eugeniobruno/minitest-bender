@@ -51,6 +51,7 @@ module Minitest
       current_context = result.context
 
       if current_context != previous_context
+        recorder.print_context_with_results(previous_context, results_by_context[previous_context]) unless previous_context.nil?
         recorder.print_context(current_context)
         @previous_context = current_context
       end
@@ -59,12 +60,17 @@ module Minitest
 
       @time_ranking_is_relevant = true if result.time > 0.01
 
+      if run_count == total_tests_count
+        recorder.print_context_with_results(current_context, results_by_context[current_context])
+      end
+
       recorder.print_result(result)
+
       io.flush
     end
 
     def passed?
-      passed_count + skipped_count == test_count
+      passed_count + skipped_count == run_count
     end
 
     def report
@@ -101,10 +107,20 @@ module Minitest
       @recorder ||= begin
         recorder_sym = configuration.recorder
         case recorder_sym
-        when :compact
-          MinitestBender::Recorders::Compact.new(io)
-        when :verbose
-          MinitestBender::Recorders::Verbose.new(io)
+        when :progress
+          MinitestBender::Recorders::Progress.new(io, total_tests_count)
+        when :progress_groups
+          MinitestBender::Recorders::ProgressGroups.new(io, total_tests_count)
+        when :progress_issues
+          MinitestBender::Recorders::ProgressIssues.new(io, total_tests_count)
+        when :progress_groups_and_issues
+          MinitestBender::Recorders::ProgressGroupsAndIssues.new(io, total_tests_count)
+        when :progress_verbose
+          MinitestBender::Recorders::ProgressVerbose.new(io, total_tests_count)
+        when :icons
+          MinitestBender::Recorders::Icons.new(io)
+        when :grouped_icons
+          MinitestBender::Recorders::GroupedIcons.new(io)
         when :none
           MinitestBender::Recorders::None.new
         else
@@ -121,8 +137,26 @@ module Minitest
       @skipped_count ||= results.count(&:skipped?)
     end
 
-    def test_count
+    def run_count
       results.size
+    end
+
+    # Minitest should share this with reporters...
+    def total_tests_count
+      @total_tests_count ||= begin
+        filter = options[:filter] || '/./'
+        filter = Regexp.new($1) if filter.is_a?(String) && filter =~ %r%/(.*)/%
+
+        exclude = options[:exclude]
+        exclude = Regexp.new($1) if exclude.is_a?(String) && exclude =~ %r%/(.*)/%
+
+        Minitest::Runnable.runnables.map do |runnable|
+          runnable.runnable_methods.count do |m|
+            (filter === m || filter === "#{runnable}##{m}") &&
+            !(exclude === m || exclude === "#{runnable}##{m}")
+          end
+        end.inject(:+)
+      end
     end
 
     def print_no_tests_status

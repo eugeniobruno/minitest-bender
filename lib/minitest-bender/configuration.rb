@@ -2,7 +2,7 @@ module MinitestBender
   class Configuration
     DEFAULT_CONFIG = {
       mode: :oblivious,
-      recorder: :compact,
+      recorder: :progress,
       sections: [:overview, :time_ranking, :issues, :activity, :suite_status],
       sections_blacklist: [],
       overview_sort_key: :name,

@@ -64,7 +64,7 @@ module MinitestBender
       def print_result(result, previous_words, sorted_siblings)
         formatted_number = result.formatted_number(sorted_siblings)
 
-        prefix = "#{result.formatted_label}#{result.formatted_time}#{formatted_number}"
+        prefix = "    #{result.formatted_label}#{result.formatted_time}#{formatted_number}"
         words = result.name.split(' ')
 
         formatted_words = formatted_old_and_new(previous_words, words, ' ')

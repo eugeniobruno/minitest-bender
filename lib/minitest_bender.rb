@@ -15,8 +15,16 @@ require 'minitest-bender/results/base'
 require 'minitest-bender/results/test'
 require 'minitest-bender/results/expectation'
 
-require 'minitest-bender/recorders/compact'
-require 'minitest-bender/recorders/verbose'
+require 'minitest-bender/printers/plain'
+require 'minitest-bender/printers/with_progress_bar'
+
+require 'minitest-bender/recorders/progress'
+require 'minitest-bender/recorders/progress_groups'
+require 'minitest-bender/recorders/progress_issues'
+require 'minitest-bender/recorders/progress_groups_and_issues'
+require 'minitest-bender/recorders/progress_verbose'
+require 'minitest-bender/recorders/icons'
+require 'minitest-bender/recorders/grouped_icons'
 require 'minitest-bender/recorders/none'
 
 require 'minitest-bender/sections/sorted_overview'
