@@ -26,7 +26,7 @@ module MinitestBender
       attr_reader :printer
 
       def result_line(result)
-        "  #{result.formatted_label}#{result.formatted_time}#{result.formatted_number} #{result.formatted_name_with_context}"
+        "  #{result.formatted_label_and_time}#{result.formatted_number} #{result.formatted_name_with_context}"
       end
     end
   end

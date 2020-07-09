@@ -61,6 +61,10 @@ module MinitestBender
         Colorizer.colorize(time_with_unit.rjust(6), :time)
       end
 
+      def formatted_label_and_time
+        "#{formatted_label} #{formatted_time}"
+      end
+
       def formatted_message
         state.formatted_message(self)
       end
