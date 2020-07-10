@@ -6,40 +6,41 @@ module Minitest
       Bender.enable!
     end
 
-    opts.on '--bender-mode=MODE', 'Bender: choose the mode of interaction with other reporters. (oblivious | cooperative)' do |m|
+    opts.on '--bender-mode MODE', 'Choose the mode of interaction with other reporters. [oblivious | cooperative] (overrides $MT_BENDER_MODE)' do |m|
       Bender.configuration.mode = m
     end
 
-    opts.on '--bender-recorder=RECORDER', 'Bender: choose how test results are printed as the suite runs. (progress | progress_groups | progress_issues | progress_groups_and_issues | progress_verbose | icons | grouped_icons | none)' do |r|
+    opts.on '--bender-recorder RECORDER', 'Choose how test results are printed as the suite runs. [progress | progress_groups | progress_issues | progress_groups_and_issues | progress_verbose | icons | grouped_icons | none] (overrides $MT_BENDER_RECORDER)' do |r|
       Bender.configuration.recorder = r
     end
 
-    opts.on('--bender-sections=SECTIONS', 'Bender: choose which sections to print. (comma-separated names)') do |ss|
+    opts.on('--bender-sections SECTIONS', 'Choose which sections to print. Eg: activity,suite_status (overrides $MT_BENDER_SECTIONS)') do |ss|
       Bender.configuration.sections = ss
     end
 
-    opts.on('--bender-sections-blacklist=SECTIONS', 'Bender: choose which sections to skip. (comma-separated names)') do |ss|
+    opts.on('--bender-sections-blacklist SECTIONS', 'Choose which sections to skip. Eg: overview,time_ranking (overrides $MT_BENDER_SECTIONS_BLACKLIST)') do |ss|
       Bender.configuration.sections_blacklist = ss
     end
 
-    opts.on '--bender-overview-sort-key=KEY', 'Bender: choose how tests are sorted in the overview. (name | number)' do |k|
+    opts.on '--bender-overview-sort-key KEY', 'Choose how tests are sorted in the overview. [name | number] (overrides $MT_BENDER_OVERVIEW_SORT_KEY)' do |k|
       Bender.configuration.overview_sort_key = k
     end
 
-    opts.on '--bender-time-ranking-size=SIZE', 'Bender: choose the time ranking maximum size.' do |s|
+    opts.on '--bender-time-ranking-size SIZE', 'Set the time ranking maximum size. (overrides $MT_BENDER_TIME_RANKING_SIZE)' do |s|
       Bender.configuration.time_ranking_size = s
     end
 
-    opts.on('--bender-backtrace-view=BV', 'Bender: choose the backtrace view for test errors. (user | full)') do |b|
+    opts.on('--bender-backtrace-view BV', 'Choose the backtrace view for test errors. [user | full] (overrides $MT_BENDER_BACKTRACE_VIEW)') do |b|
       Bender.configuration.backtrace_view = b
     end
 
-    opts.on('--bender-rerun-command-stem=S', 'Bender: set the stem of rerun commands.') do |s|
+    opts.on('--bender-rerun-command-stem STEM', "Set the stem of rerun commands. Eg: 'rake spec' (overrides $MT_BENDER_RERUN_COMMAND_STEM)") do |s|
       Bender.configuration.rerun_command_stem = s
     end
 
-    MinitestBender::Colorizer.color_keys.each do |color_key|
-      opts.on("--bender-#{color_key}-color=COLOR", 'Bender: choose the different colors.') do |c|
+    Bender::Colorizer.color_keys.each do |color_key|
+      colorized_color_key = Bender::Colorizer.colorize(color_key.to_s, color_key)
+      opts.on("--bender-#{color_key}-color COLOR", "Set the #{colorized_color_key} color. (overrides $MT_BENDER_#{color_key.upcase}_COLOR)") do |c|
         Bender.configuration.set_custom_color(color_key, c)
       end
     end
