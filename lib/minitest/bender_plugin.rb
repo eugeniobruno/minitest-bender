@@ -10,7 +10,7 @@ module Minitest
       Bender.configuration.mode = m
     end
 
-    opts.on '--bender-recorder=RECORDER', 'Bender: choose how test results are printed as the suite runs. (compact | verbose | none)' do |r|
+    opts.on '--bender-recorder=RECORDER', 'Bender: choose how test results are printed as the suite runs. (progress | progress_groups | progress_issues | progress_groups_and_issues | progress_verbose | icons | grouped_icons | none)' do |r|
       Bender.configuration.recorder = r
     end
 
