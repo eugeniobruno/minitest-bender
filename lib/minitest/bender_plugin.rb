@@ -34,8 +34,8 @@ module Minitest
       Bender.configuration.backtrace_view = b
     end
 
-    opts.on('--bender-run-command=RC', 'Bender: set the prefix of rerun lines.') do |c|
-      Bender.configuration.run_command = c
+    opts.on('--bender-rerun-command-stem=S', 'Bender: set the stem of rerun commands.') do |s|
+      Bender.configuration.rerun_command_stem = s
     end
 
     MinitestBender::Colorizer.color_keys.each do |color_key|

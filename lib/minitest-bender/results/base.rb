@@ -119,12 +119,12 @@ module MinitestBender
 
         relative_location = relative_location.split(':').first
 
-        prefix = Minitest::Bender.configuration.run_command
+        stem = Minitest::Bender.configuration.rerun_command_stem
 
-        if prefix.include?('rake')
-          "#{prefix} TEST=#{relative_location} TESTOPTS=\"--name=#{name_for_rerun_command}\""
+        if stem.include?('rake')
+          "#{stem} TEST=#{relative_location} TESTOPTS=\"--name=#{name_for_rerun_command}\""
         else
-          "#{prefix} #{relative_location} --name=#{name_for_rerun_command}"
+          "#{stem} #{relative_location} --name=#{name_for_rerun_command}"
         end
       end
     end
