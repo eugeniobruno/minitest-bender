@@ -107,7 +107,10 @@ module MinitestBender
       def inner_detail_lines(result, padding)
         lines = []
         result.failures[0].message.split("\n").each do |line|
-          lines << "#{padding}#{colored(line)}"
+          line.split("\\n").each do |actual_line|
+            adjusted_line = Utils.with_home_shorthand(actual_line)
+            lines << "#{padding}#{colored(adjusted_line)}"
+          end
         end
         lines << "#{padding}#{Colorizer.colorize(location(result), :backtrace)}:"
         lines
