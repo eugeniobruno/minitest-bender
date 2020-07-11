@@ -50,8 +50,9 @@ module MinitestBender
       def detail_lines(result)
         number = "#{result.execution_order})".ljust(4)
         padding = ' ' * (number.size + 4)
+        time = "(#{result.time_with_unit_and_padding_right.strip})"
         lines = []
-        lines << "    #{number}#{result.formatted_name_with_context}"
+        lines << "    #{number}#{result.formatted_name_with_context} #{Colorizer.colorize(time, :time)}"
 
         lines += inner_detail_lines(result, padding)
 

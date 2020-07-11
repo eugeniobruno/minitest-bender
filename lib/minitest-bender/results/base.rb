@@ -43,22 +43,24 @@ module MinitestBender
         state.formatted_label
       end
 
-      def formatted_time
+      def time_with_unit_and_padding_right
         time_in_s = time
-        time_with_unit =
-          case time_in_s
-          when 0...1
-            sprintf('%.0fms ', time_in_s * 1000)
-          when 1...10
-            sprintf('%.2fs ', time_in_s)
-          when 10...100
-            sprintf('%.1fs ', time_in_s)
-          when 100...10000
-            sprintf('%.0fs ', time_in_s)
-          else
-            sprintf('%.0fs', time_in_s)
-          end
-        Colorizer.colorize(time_with_unit.rjust(6), :time)
+        case time_in_s
+        when 0...1
+          sprintf('%.0fms ', time_in_s * 1000)
+        when 1...10
+          sprintf('%.2fs ', time_in_s)
+        when 10...100
+          sprintf('%.1fs ', time_in_s)
+        when 100...10000
+          sprintf('%.0fs ', time_in_s)
+        else
+          sprintf('%.0fs', time_in_s)
+        end
+      end
+
+      def formatted_time
+        Colorizer.colorize(time_with_unit_and_padding_right.rjust(6), :time)
       end
 
       def formatted_label_and_time
