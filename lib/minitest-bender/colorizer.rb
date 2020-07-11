@@ -7,9 +7,9 @@ module MinitestBender
   class Colorizer
     COLORS = {              # Xterm No. - Xterm Name
       pass:       '87ff87', # 120       - LightGreen
+      skip:       '5fd7ff', # 81        - SteelBlue1
       fail:       'ff5f5f', # 203       - IndianRed1
       error:      'ffd75f', # 221       - LightGoldenrod2
-      skip:       '5fd7ff', # 81        - SteelBlue1
       tests:      '5fafaf', # 73        - CadetBlue
       assertions: 'd75fd7', # 170       - Orchid
       time:       '878787', # 102       - Grey53
