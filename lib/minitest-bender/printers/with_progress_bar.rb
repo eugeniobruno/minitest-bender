@@ -6,8 +6,11 @@ require 'tty-progressbar'
 module MinitestBender
   module Printers
     class WithProgressBar
+      COMPLETE_ICON = ' '
       HEAD_ICON = 'ᗧ'
       INCOMPLETE_ICON = '•'
+      ELAPSED_ICON = '⏱'
+      ETA_ICON = '⌛'
 
       def initialize(io, total)
         @io = io
@@ -40,14 +43,14 @@ module MinitestBender
         TTY::ProgressBar.new(bar_format_string, {
           total: total,
           width: [total, TTY::ProgressBar.max_columns].max,
-          complete: ' ',
+          complete: complete_icon,
           head: head_icon,
           incomplete: incomplete_icon
         })
       end
 
       def bar_format_string
-        ":bar #{Colorizer.colorize(':current/:total', :tests)}  :#{counters_sym}  #{Colorizer.colorize('⏱ :elapsed', :time)}   #{Colorizer.colorize('⌛:eta', :time)}  #{Colorizer.colorize(':percent', :normal, :bold)}"
+        ":bar #{Colorizer.colorize(':current/:total', :tests)}  :#{counters_sym}  #{Colorizer.colorize(elapsed_icon + ' :elapsed', :time)}   #{Colorizer.colorize(eta_icon + ':eta', :time)}  #{Colorizer.colorize(':percent', :normal, :bold)}"
       end
 
       def counters
@@ -68,12 +71,24 @@ module MinitestBender
         Colorizer.colorize(head_icon, head_color)
       end
 
+      def complete_icon
+        COMPLETE_ICON
+      end
+
       def head_icon
         HEAD_ICON
       end
 
       def incomplete_icon
         INCOMPLETE_ICON
+      end
+
+      def elapsed_icon
+        ELAPSED_ICON
+      end
+
+      def eta_icon
+        ETA_ICON
       end
 
       def head_color
