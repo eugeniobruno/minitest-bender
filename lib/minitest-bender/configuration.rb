@@ -18,6 +18,7 @@ module MinitestBender
     end
 
     def add_client_config(config)
+      validate_config(config)
       client_config.merge!(config)
     end
 
@@ -93,6 +94,19 @@ module MinitestBender
     private
 
     attr_reader :client_config, :options_config
+
+    def validate_config(config)
+      invalid_options = config.keys.map(&:to_sym) - valid_options
+      unless invalid_options.empty?
+        first_invalid_option = invalid_options.first
+        message = "invalid option: '#{first_invalid_option}'"
+        raise ArgumentError, message
+      end
+    end
+
+    def valid_options
+      default_config.keys
+    end
 
     def parsed_list(list)
       strings = list.is_a?(Array) ? list.map(&:to_s) : list.split(',')
