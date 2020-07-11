@@ -1,16 +1,17 @@
 module MinitestBender
   module Sections
     class SuiteStatus
-      def initialize(io, options_args, results)
+      def initialize(io, options, results, total_tests_count)
         @io = io
-        @options_args = options_args
+        @options = options
         @results = results
+        @total_tests_count = total_tests_count
       end
 
       def print
         final_divider_color = all_passed_color
 
-        if all_run_tests_passed? && all_tests_were_run?
+        if all_tests_passed?
           message = Colorizer.colorize('  ALL TESTS PASS!  (^_^)/', all_passed_color)
         else
           messages = MinitestBender.states.values.map do |state|
@@ -28,10 +29,26 @@ module MinitestBender
 
       private
 
-      attr_reader :io, :options_args, :results
+      attr_reader :io, :options, :results, :total_tests_count
 
       def all_passed_color
         :pass
+      end
+
+      def all_tests_passed?
+        all_tests_were_run? && all_run_tests_passed?
+      end
+
+      def all_tests_were_run?
+        !restricted_run? && !interrupted?
+      end
+
+      def restricted_run?
+        (options.key?(:filter) && options[:filter] != '/./') || options.key?(:exclude)
+      end
+
+      def interrupted?
+        test_count < total_tests_count
       end
 
       def all_run_tests_passed?
@@ -44,14 +61,6 @@ module MinitestBender
 
       def passed_count
         @passed_count ||= results.count(&:passed?)
-      end
-
-      def all_tests_were_run?
-        !restricted_run?
-      end
-
-      def restricted_run?
-        options_args =~ /(?:^-n.*)|(?:--name=)|(?:-l\s?\d)|(?:--line(?:\s|=)\d)/
       end
 
       def print_divider(color)

@@ -191,7 +191,7 @@ module Minitest
         when :activity
           MinitestBender::Sections::Activity.new(io, started_at, results)
         when :suite_status
-          MinitestBender::Sections::SuiteStatus.new(io, options_args, results)
+          MinitestBender::Sections::SuiteStatus.new(io, options, results, total_tests_count)
         else
           raise "unknown section: #{section_name}"
         end
