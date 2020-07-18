@@ -24,7 +24,6 @@ module MinitestBender
         klass = context_path.last
 
         printer.print_line("#{prefix}#{counters(result_context)} #{path}#{Colorizer.colorize(klass, :normal, :bold)}")
-        printer.print_line
       end
 
       private
