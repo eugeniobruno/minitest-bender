@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.authors  = ['Eugenio Bruno']
   spec.email    = ['eugeniobruno@gmail.com']
 
-  spec.summary  = 'My own Minitest reporter, without blackjack but with a hook.'
+  spec.summary  = 'A comprehensive Minitest reporter.'
   spec.homepage = 'https://github.com/eugeniobruno/minitest-bender'
   spec.license  = 'MIT'
 
