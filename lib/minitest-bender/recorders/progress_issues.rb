@@ -12,8 +12,7 @@ module MinitestBender
       def print_result(result)
         printer.print_line(result_line(result)) unless result.passed?
         lines = result.state.detail_lines_without_header(result)
-        lines << '' unless lines.empty?
-        lines.each { |line| printer.print_line(line.sub('  ', '')) }
+        printer.print_lines(lines)
         printer.advance
       end
 

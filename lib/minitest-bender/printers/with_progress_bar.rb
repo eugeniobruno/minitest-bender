@@ -30,6 +30,10 @@ module MinitestBender
         end
       end
 
+      def print_lines(lines)
+        lines.each { |line| print_line(line) }
+      end
+
       def advance
         bar.update({ head: head })
         bar.advance(1, { counters_sym => counters })

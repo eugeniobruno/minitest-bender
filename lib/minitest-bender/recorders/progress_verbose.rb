@@ -13,8 +13,8 @@ module MinitestBender
       def print_result(result)
         printer.print_line(result_line(result))
         lines = result.state.detail_lines_without_header(result)
-        lines << '' unless lines.empty?
-        lines.each { |line| printer.print_line(line) }
+        padded_lines = lines.map { |line| "  #{line}" }
+        printer.print_lines(padded_lines)
         printer.advance
       end
 

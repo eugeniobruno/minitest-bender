@@ -13,6 +13,10 @@ module MinitestBender
         io.puts(line)
       end
 
+      def print_lines(lines)
+        lines.each { |line| print_line(line) }
+      end
+
       def advance
         # do nothing
       end

@@ -63,15 +63,16 @@ module MinitestBender
 
       def detail_lines_without_header(result)
         number = "#{result.execution_order})".ljust(4)
-        padding = ' ' * (number.size + 4)
+        padding = ' ' * (number.size + 2)
         lines = []
 
         lines += inner_detail_lines(result, padding).tap do |ls|
-          ls[0] = "    #{number}#{ls[0].strip}" unless ls.empty?
+          ls[0] = "  #{number}#{ls[0].strip}" unless ls.empty?
         end
 
         lines << ''
         lines << result.rerun_line(padding)
+        lines << ''
         lines
       end
 
