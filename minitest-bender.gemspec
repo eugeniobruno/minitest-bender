@@ -7,7 +7,7 @@ require 'minitest-bender/version'
 Gem::Specification.new do |spec|
   spec.name     = 'minitest-bender'
   spec.version  = MinitestBender::VERSION
-  spec.date     = '2020-07-19'
+  spec.date     = '2021-07-03'
   spec.authors  = ['Eugenio Bruno']
   spec.email    = ['eugeniobruno@gmail.com']
 
