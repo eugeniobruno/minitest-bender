@@ -57,8 +57,8 @@ module MinitestBender
         lines += inner_detail_lines(result, padding)
 
         lines << ''
-        lines << result.rerun_line(padding)
-        lines
+        lines << rerun_line(result, padding)
+        lines.compact
       end
 
       def detail_lines_without_header(result)
@@ -71,9 +71,9 @@ module MinitestBender
         end
 
         lines << ''
-        lines << result.rerun_line(padding)
+        lines << rerun_line(result, padding)
         lines << ''
-        lines
+        lines.compact
       end
 
       def color
@@ -114,8 +114,16 @@ module MinitestBender
             lines << "#{padding}#{colored(adjusted_line)}"
           end
         end
-        lines << "#{padding}#{Colorizer.colorize(location(result), :backtrace)}:"
-        lines
+        lines << backtrace(result, padding)
+        lines.compact
+      end
+
+      def backtrace(result, padding)
+        "#{padding}#{Colorizer.colorize(location(result), :backtrace)}:"
+      end
+
+      def rerun_line(result, padding)
+        result.rerun_line(padding)
       end
 
       def location(result)

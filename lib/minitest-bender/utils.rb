@@ -18,6 +18,10 @@ module MinitestBender
       strings.reject(&:empty?).join(', ').gsub(/(.*), /, '\1 and ')
     end
 
+    def self.first_line(string)
+      string.split("\n").first.to_s
+    end
+
     def self.with_symbolized_keys(hash)
       hash.each_with_object({}) do |(k, v), h|
         h[k.to_sym] = v
